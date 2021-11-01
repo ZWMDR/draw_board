@@ -1,0 +1,102 @@
+
+.penSelectBox{
+    height: 140px;
+    width: 55px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+}
+.shapeSelectBox{
+    height: 200px;
+    width: 55px;
+    position: absolute;
+    top: 160px;
+    left: 0;
+    padding: 5px;
+}
+.lineWidthSelectBox{
+    height: 180px;
+    width: 55px;
+    position: absolute;
+    top: 380px;
+    left: 0;
+    padding: 5px;
+}
+.colorSelectBox{
+    height: 200px;
+    width: 55px;
+    position: absolute;
+    top: 580px;
+    left: 0;
+    padding: 5px;
+}
+
+.toolsSelectBorder{
+    height: 100%;
+    width: 100%;
+    border:2px solid #999999;
+    border-radius: 5px;
+    padding: 5px;
+    position:relative;
+}
+.toolsSelectTitle{
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.toolsSelectTitleText{
+    font: bold 17px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+    text-align: center;
+}
+.toolsSelectUl{
+    list-style-type: none;
+    margin:0 auto;
+    padding:0;
+    text-align: center;
+}
+.toolsSelectLi{
+    width: 30px;
+    height: 30px;
+    list-style: none;
+    float: left;
+    margin: 2px;
+    display: inline;
+    position: relative;
+    left: 8px;
+}
+
+.colorSelectLi{
+    width: 19px;
+    height: 19px;
+    list-style: none;
+    float: left;
+    margin: 2px;
+    display: inline;
+    position: relative;
+    left: 0;
+    border: #878787 solid 2px;
+}
+.colorSelectLiSelect{
+    width: 19px;
+    height: 19px;
+    list-style: none;
+    float: left;
+    margin: 2px;
+    display: inline;
+    position: relative;
+    left: 0;
+    border: #4d0099 solid 2px;
+    border-radius: 2px;
+}
+.toolsImg{
+    text-align:center;
+    justify-content: center;
+}
+.toolsImgSelect{
+    text-align:center;
+    justify-content: center;
+    margin-bottom: 1px;
+    border: #4d0099 solid 1px;
+}

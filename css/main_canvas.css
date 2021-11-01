@@ -1,0 +1,7 @@
+.mainCanvas{
+    border: #474747 solid 2px;
+    border-radius: 5px;
+    position: absolute;
+    left: 80px;
+    top: 5px;
+}

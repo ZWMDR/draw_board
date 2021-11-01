@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="../js/canvas.js"></script>
+    <script type="text/javascript" src="../js/mouse_suspended_prompt.js"></script>
+<!--    <script src='../js/lodash.min.js'></script>-->
+<!--    <script  src="../js/index.js"></script>-->
+<!--    <link rel="stylesheet" type="text/css" href="../css/triangle_background.css">-->
+    <link rel="stylesheet" type="text/css" href="../css/tools_select_box.css">
+    <link rel="stylesheet" type="text/css" href="../css/canvas_background.css">
+    <link rel="stylesheet" type="text/css" href="../css/main_canvas.css">
+    <title>几何画板</title>
+</head>
+<body>
+<!--    <div class="ui">-->
+<!--        <p class="zoom"><span class="zoom zoomin">+</span><span class="zoom zoomout">-</span></p>-->
+<!--        <p class="zoomlevel"><span class="percent">100</span> % - (<span class="width"></span>px)(<span class="height"></span>px)</p>-->
+<!--        <p>Dead: <span class="dead">0</span></p>-->
+<!--        <p>Alive: <span class="alive">0</span></p>-->
+<!--        <p>Drawn: <span class="drawn">0</span></p>-->
+<!--        <p><span class="fps">0</span> FPS</p>-->
+<!--        <a class="save" href="" download="capture.png">Save</a>-->
+<!--    </div>-->
+    <div class="background" id="background">
+        <div class="penSelectBox" id="penSelectBox">
+            <div class="toolsSelectBorder" id="penSelectBorder">
+                <div class="toolsSelectTitle" id="penSelectTitle">
+                    <span class="toolsSelectTitleText">画笔</span>
+                </div>
+                <ul class="toolsSelectUl" id="penSelectUl">
+                    <li class="toolsSelectLi" id="pencilLi" onmouseover="mouseMove(event, '铅笔')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="pencil" class="toolsImg" onclick="onClickPen(this)" src="../images/pencil_select.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="penLi" onmouseover="mouseMove(event, '钢笔')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="pen" class="toolsImg" onclick="onClickPen(this)" src="../images/pen.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="eraserLi" onmouseover="mouseMove(event, '橡皮擦')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="eraser" class="toolsImg"  onclick="onClickPen(this)" src="../images/eraser.png" width="25" height="25">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="shapeSelectBox" id="shapeSelectBox">
+            <div class="toolsSelectBorder" id="shapeSelectBorder">
+                <div class="toolsSelectTitle" id="shapeSelectTitle">
+                    <span class="toolsSelectTitleText">形状</span>
+                </div>
+                <ul class="toolsSelectUl" id="shapeSelectUl">
+                    <li class="toolsSelectLi" id="straightLineLi" onmouseover="mouseMove(event, '直线工具')" onmouseout="mouseMove(event, 0)">
+                        <img id="straightLine" class="toolsImg" onclick="onClickPen(this)" src="../images/straightLine.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="circleLi" onmouseover="mouseMove(event, '圆形工具')" onmouseout="mouseMove(event, 0)">
+                        <img id="circle" class="toolsImg" onclick="onClickPen(this)" src="../images/circle.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="triangleLi" onmouseover="mouseMove(event, '正三角形工具')" onmouseout="mouseMove(event, 0)">
+                        <img id="triangle" class="toolsImg" onclick="onClickPen(this)" src="../images/triangle.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="rectangleLi" onmouseover="mouseMove(event, '矩形工具')" onmouseout="mouseMove(event, 0)">
+                        <img id="rectangle" class="toolsImg" onclick="onClickPen(this)" src="../images/rectangle.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="rhomboidLi" onmouseover="mouseMove(event, '任意四边形工具')" onmouseout="mouseMove(event, 0)">
+                        <img id="rhomboid" class="toolsImg" onclick="onClickPen(this)" src="../images/rhomboid.png" width="25" height="25">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="lineWidthSelectBox" id="lineWidthSelectBox">
+            <div class="toolsSelectBorder" id="lineWidthSelectBorder">
+                <div class="toolsSelectTitle" id="lineWidthSelectTitle">
+                    <span class="toolsSelectTitleText" id="lineWidthText">线宽</span>
+                </div>
+                <ul class="toolsSelectUl" id="lineWidthSelectUl">
+                    <li class="toolsSelectLi" id="2pxLi" onmouseover="mouseMove(event, '线宽2px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="line2px" class="toolsImg" onclick="onClickLineWidth(this)" src="../images/line2px_select.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="4pxLi" onmouseover="mouseMove(event, '线宽4px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="line4px" class="toolsImg" onclick="onClickLineWidth(this)" src="../images/line4px.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="8pxLi" onmouseover="mouseMove(event, '线宽8px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="line8px" class="toolsImg"  onclick="onClickLineWidth(this)" src="../images/line8px.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="12pxLi" onmouseover="mouseMove(event, '线宽12px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="line12px" class="toolsImg"  onclick="onClickLineWidth(this)" src="../images/line12px.png" width="25" height="25">
+                    </li>
+                </ul>
+            </div>
+            <div class="toolsSelectBorder" id="eraserSelectBorder">
+                <div class="toolsSelectTitle" id="eraserSelectTitle">
+                    <span class="toolsSelectTitleText" id="eraserText">大小</span>
+                </div>
+                <ul class="toolsSelectUl" id="eraserSelectUl">
+                    <li class="toolsSelectLi" id="10pxLi" onmouseover="mouseMove(event, '边宽10px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="eraser10px" class="toolsImg" onclick="onClickEraserWidth(this)" src="../images/line2px_select.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="20pxLi" onmouseover="mouseMove(event, '边宽20px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="eraser20px" class="toolsImg" onclick="onClickEraserWidth(this)" src="../images/line4px.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="30pxLi" onmouseover="mouseMove(event, '边宽30px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="eraser30px" class="toolsImg"  onclick="onClickEraserWidth(this)" src="../images/line8px.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="50pxLi" onmouseover="mouseMove(event, '边宽50px')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="eraser50px" class="toolsImg"  onclick="onClickEraserWidth(this)" src="../images/line12px.png" width="25" height="25">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="colorSelectBox" id="colorWidthSelectBox">
+            <div class="toolsSelectBorder" id="colorWidthSelectBorder">
+                <div class="toolsSelectTitle" id="colorWidthSelectTitle">
+                    <span class="toolsSelectTitleText">颜色</span>
+                </div>
+                <ul class="toolsSelectUl" id="colorWidthSelectUl">
+                    <li class="colorSelectLiSelect" id="blackLi" onmouseover="mouseMove(event, '黑色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="black" class="toolsImgSelect" onclick="onClickColor(this)" src="../images/black.jpg" width="12" height="12">
+                    </li>
+                    <li class="colorSelectLi" id="redLi" onmouseover="mouseMove(event, '红色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="red" class="toolsImg" onclick="onClickColor(this)" src="../images/red.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="blueLi" onmouseover="mouseMove(event, '蓝色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="blue" class="toolsImg"  onclick="onClickColor(this)" src="../images/blue.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="yellowLi" onmouseover="mouseMove(event, '黄色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="yellow" class="toolsImg"  onclick="onClickColor(this)" src="../images/yellow.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="purpleLi" onmouseover="mouseMove(event, '紫色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="purple" class="toolsImg"  onclick="onClickColor(this)" src="../images/purple.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="greenLi" onmouseover="mouseMove(event, '绿色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="green" class="toolsImg"  onclick="onClickColor(this)" src="../images/green.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="orangeLi" onmouseover="mouseMove(event, '橙色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="orange" class="toolsImg"  onclick="onClickColor(this)" src="../images/orange.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="darkBlueLi" onmouseover="mouseMove(event, '深蓝色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="darkBlue" class="toolsImg"  onclick="onClickColor(this)" src="../images/darkBlue.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="brownLi" onmouseover="mouseMove(event, '棕色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="brown" class="toolsImg"  onclick="onClickColor(this)" src="../images/brown.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="wineRedLi" onmouseover="mouseMove(event, '酒红色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="wineRed" class="toolsImg"  onclick="onClickColor(this)" src="../images/wineRed.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="goldenLi" onmouseover="mouseMove(event, '金色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="golden" class="toolsImg"  onclick="onClickColor(this)" src="../images/golden.jpg" width="15" height="15">
+                    </li>
+                    <li class="colorSelectLi" id="pinkLi" onmouseover="mouseMove(event, '金色')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="pink" class="toolsImg"  onclick="onClickColor(this)" src="../images/pink.jpg" width="15" height="15">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="canvasBox" id="canvasBox">
+            <canvas class="mainCanvas" id="mainCanvas" width="1600px" height="900px"></canvas>
+        </div>
+    </div>
+</body>
+</html>

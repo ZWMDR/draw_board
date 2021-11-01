@@ -1,0 +1,75 @@
+.background{
+    width: 100vw;
+    height: 100vh;
+    display: table;
+    align-items: center;
+    justify-content: center;
+}
+
+.backgroundImg{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background-image: url("../images/indexBackground.jpg");
+    opacity: 0.5;
+    /*-webkit-filter: blur(3px);*/
+    /*filter: blur(3px);*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+.selfIntroductionBox{
+    position: absolute;
+    top: 0;
+    left: 5%;
+    width: 90%;
+    height: 50%;
+    text-align: center;
+    border: brown solid 2px;
+    border-radius: 10px;
+    margin-top: 1%;
+}
+
+.startBtnDiv{
+    position: absolute;
+    left: 5%;
+    top: 85%;
+    width: 90%;
+    height: 20%;
+    text-align: center;
+}
+.startBtn{
+    width: 5%;
+    line-height: 280%;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    text-shadow:1px 1px 1px #333;
+    border-radius: 5px;
+    margin:0 20px 20px 0;
+    position: relative;
+    overflow: hidden;
+
+    border:1px solid #1e7db9;
+    box-shadow: 0 1px 2px #8fcaee inset,0 -1px 0 #497897 inset,0 -2px 3px #8fcaee inset;
+    background: -webkit-linear-gradient(top,#42a4e0,#2e88c0);
+    background: -moz-linear-gradient(top,#42a4e0,#2e88c0);
+    background: linear-gradient(top,#42a4e0,#2e88c0);
+}
+.startBtn:hover{
+    background: -webkit-linear-gradient(top,#70bfef,#4097ce);
+    background: -moz-linear-gradient(top,#70bfef,#4097ce);
+    background: linear-gradient(top,#70bfef,#4097ce);
+}
+.startBtn:active{
+    top:1px;
+    box-shadow: 0 1px 3px #114566 inset,0 3px 0 #fff;
+    background: -webkit-linear-gradient(top,#1a71a8,#1976b1);
+    background: -moz-linear-gradient(top,#1a71a8,#1976b1);
+    background: linear-gradient(top,#1a71a8,#1976b1);
+}
+
