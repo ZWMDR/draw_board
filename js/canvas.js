@@ -478,10 +478,10 @@ function fill_LongRect(beginPoint, endPoint, height, fillColor) {
             rightPoint = endPoint;
             leftPoint = beginPoint;
         }
-        a = {
-            x: rightPoint.x + ,
-            y:
-        }
+        // a = {
+        //     x: rightPoint.x + ,
+        //     y:
+        // }
     }
     // ctx.fillRect(beginPoint.x, beginPoint.y, endPoint.x-beginPoint.x, height);
     ctx.moveTo(a.x, a.y);
