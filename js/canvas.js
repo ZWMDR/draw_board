@@ -371,28 +371,30 @@ function rectEnd(e) {
 }
 
 // 星形工具
-function drawStar(beginPoint, endPoint){
-    ctx.beginPath();
-    let R=getDistance(beginPoint, endPoint);
-    let r=R/2;
-    let x;
-    let y;
-    for (let i = 0; i < 5; i++){
-        // 外围凸出的每个点坐标
-        x = Math.cos((18 + 72*i) / 180 * Math.PI) * R+beginPoint.x
-        y = -Math.sin((18 + 72*i) / 180 * Math.PI) * R+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
-        ctx.lineTo(x, y)
-        // 外围凹下去的每个点坐标
-        x = Math.cos((54 + 72*i) / 180 * Math.PI) * r+beginPoint.x
-        y = -Math.sin((54 + 72*i) / 180 * Math.PI) * r+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
-        ctx.lineTo(x, y)
+function starStart(e){
+    beginPoint = getPoint(e);
+    lastPoint = beginPoint;
+    drawFlag = true;
+}
+function starDraw(e){
+    if(!drawFlag) return;
+    lastPoint = getPoint(e);
+    canvas.height = canvas.height;
+    reDrawCanvas();
+    drawStar(beginPoint, lastPoint);
+}
 
-    }
-    ctx.moveTo(x, y);
-    ctx.lineTo(Math.cos(18/180 * Math.PI) * R+beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R+beginPoint.y );
-    ctx.stroke();
-    ctx.closePath();
-
+function starEnd(e){
+    if(!drawFlag) return;
+    drawFlag = false;
+    if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
+    canvasAllOps.push({
+        type: "Star",
+        lineWidth: ctx.lineWidth,
+        color: currentColor,
+        beginPoint: beginPoint,
+        endPoint: lastPoint
+    });
 }
 
 // 绘制二次贝塞尔曲线，传入参数：
@@ -584,6 +586,29 @@ function drawTriangle(beginPoint, endPoint) {
     ctx.stroke();
     ctx.closePath();
 }
+function drawStar(beginPoint, endPoint){
+    ctx.beginPath();
+    let R = getDistance(beginPoint, endPoint);
+    let r = R/2;
+    let x;
+    let y;
+    for (let i = 0; i < 5; i++){
+        // 外围凸出的每个点坐标
+        x = Math.cos((18 + 72*i) / 180 * Math.PI) * R+beginPoint.x
+        y = -Math.sin((18 + 72*i) / 180 * Math.PI) * R+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
+        ctx.lineTo(x, y)
+        // 外围凹下去的每个点坐标
+        x = Math.cos((54 + 72*i) / 180 * Math.PI) * r+beginPoint.x
+        y = -Math.sin((54 + 72*i) / 180 * Math.PI) * r+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
+        ctx.lineTo(x, y)
+
+    }
+    ctx.moveTo(x, y);
+    ctx.lineTo(Math.cos(18/180 * Math.PI) * R+beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R+beginPoint.y );
+    ctx.stroke();
+    ctx.closePath();
+
+}
 
 function reDrawCanvas(){
     for(let i = 0; i < canvasAllOps.length; i++){
@@ -596,7 +621,7 @@ function reDrawCanvas(){
             case "Circle": drawCircle(oneOp.beginPoint, oneOp.endPoint); break;
             case "Rect": drawRect(oneOp.beginPoint, oneOp.endPoint); break;
             case "Triangle": drawTriangle(oneOp.beginPoint, oneOp.endPoint); break;
-            case "star": drawStar(oneOp.beginPoint, oneOp.endPoint); break;
+            case "Star": drawStar(oneOp.beginPoint, oneOp.endPoint); break;
             case "Eraser": drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2); break;
         }
     }
@@ -628,6 +653,7 @@ window.onload = function (){
             case "circle": circleStart(e); break;
             case "rectangle": rectStart(e); break;
             case "triangle": triangleStart(e); break;
+            case "star": starStart(e); break;
             case "rhomboid": break;
         }
     }, false);
@@ -640,6 +666,7 @@ window.onload = function (){
             case "circle": circleDraw(e); break;
             case "rectangle": rectDraw(e); break;
             case "triangle": triangleDraw(e); break;
+            case "star": starDraw(e); break;
             case "rhomboid": break;
         }
     }, false);
@@ -652,6 +679,7 @@ window.onload = function (){
             case "circle": circleEnd(e); break;
             case "rectangle": rectEnd(e); break;
             case "triangle": triangleEnd(e); break;
+            case "star": starEnd(e); break;
             case "rhomboid": break;
         }
     }, false);
@@ -664,6 +692,7 @@ window.onload = function (){
             case "circle": circleEnd(e); break;
             case "rectangle": rectEnd(e); break;
             case "triangle": triangleEnd(e); break;
+            case "star": starEnd(e); break;
             case "rhomboid": break;
         }
     }, false);
