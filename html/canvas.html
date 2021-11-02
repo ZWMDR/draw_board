@@ -61,7 +61,7 @@
                     <li class="toolsSelectLi" id="rectangleLi" onmouseover="mouseMove(event, '矩形工具')" onmouseout="mouseMove(event, 0)">
                         <img id="rectangle" class="toolsImg" onclick="onClickPen(this)" src="../images/rectangle.png" width="25" height="25">
                     </li>
-                    <li class="toolsSelectLi" id="starLi" onmouseover="mouseMove(event, '矩形工具')" onmouseout="mouseMove(event, 0)">
+                    <li class="toolsSelectLi" id="starLi" onmouseover="mouseMove(event, '星形工具')" onmouseout="mouseMove(event, 0)">
                         <img id="star" class="toolsImg" onclick="onClickPen(this)" src="../images/star.png" width="25" height="25">
                     </li>
                     <li class="toolsSelectLi" id="rhomboidLi" onmouseover="mouseMove(event, '任意四边形工具')" onmouseout="mouseMove(event, 0)">
@@ -154,6 +154,9 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="clearCanvasBox" id="clearCanvasBox">
+            <button id="clearBtn" class="clearBtn">清除画布</button>
         </div>
         <div class="canvasBox" id="canvasBox">
             <canvas class="mainCanvas" id="mainCanvas" width="1600px" height="900px"></canvas>

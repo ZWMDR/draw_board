@@ -1,3 +1,5 @@
+let canvasHeight = 1200;
+let canvasWidth = 800;
 let lastToolId = "pencil";
 let currentToolId = "pencil";
 let currentLineWidth = {id: "line2px", width: 2};
@@ -13,11 +15,10 @@ let drawFlag = false;
 let canvasAllOps = [];
 let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
+let scaleRate = {x: 1, y: 1};
 let context = null;
 
 function drawCoordinateAxis() {
-    const canvasHeight=ctx.canvas.height; //canvas画布的高度
-    const canvasWidth=ctx.canvas.width;   //获取画布的宽度
     let currentStyle = ctx.strokeStyle;
     let currentLineWidth = ctx.lineWidth;
     let currentFIllStyle = ctx.fillStyle;
@@ -54,6 +55,9 @@ function drawCoordinateAxis() {
     ctx.strokeStyle = currentStyle;
     ctx.fillStyle = currentFIllStyle;
     ctx.setLineDash([]);
+}
+function drawCoordinateScale() {
+    
 }
 
 function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜色
@@ -607,7 +611,6 @@ function drawStar(beginPoint, endPoint){
     ctx.lineTo(Math.cos(18/180 * Math.PI) * R+beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R+beginPoint.y );
     ctx.stroke();
     ctx.closePath();
-
 }
 
 function reDrawCanvas(){
@@ -644,6 +647,8 @@ window.onload = function (){
     canvas = document.getElementById("mainCanvas");
     ctx = canvas.getContext("2d");
     ctx.lineWidth = currentLineWidth.width;
+    canvasHeight = canvas.height;
+    canvasWidth = canvas.width;
     canvas.addEventListener("mousedown", function (e){
         switch (currentToolId) {
             case "pencil": pencilMouseStart(e);break; //铅笔
@@ -695,6 +700,10 @@ window.onload = function (){
             case "star": starEnd(e); break;
             case "rhomboid": break;
         }
+    }, false);
+    document.getElementById("clearBtn").addEventListener("click", function (){
+        canvas.height = canvas.height;
+        drawCoordinateAxis();
     }, false);
     drawCoordinateAxis();
 }

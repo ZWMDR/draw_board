@@ -8,7 +8,7 @@
     padding: 5px;
 }
 .shapeSelectBox{
-    height: 200px;
+    height: 230px;
     width: 55px;
     position: absolute;
     top: 160px;
@@ -19,7 +19,7 @@
     height: 180px;
     width: 55px;
     position: absolute;
-    top: 380px;
+    top: 410px;
     left: 0;
     padding: 5px;
 }
@@ -27,9 +27,18 @@
     height: 200px;
     width: 55px;
     position: absolute;
-    top: 580px;
+    top: 610px;
     left: 0;
     padding: 5px;
+}
+.clearCanvasBox{
+    height: 50px;
+    width: 55px;
+    position: absolute;
+    top: 840px;
+    left: 0;
+    padding-left: 5px;
+    text-align: center;
 }
 
 .toolsSelectBorder{
@@ -99,4 +108,36 @@
     justify-content: center;
     margin-bottom: 1px;
     border: #4d0099 solid 1px;
+}
+
+.clearBtn{
+    width: 70px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    text-shadow:1px 1px 1px #333;
+    border-radius: 5px;
+    margin:0 20px 20px 0;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+
+    border:1px solid #1e7db9;
+    box-shadow: 0 1px 2px #8fcaee inset,0 -1px 0 #497897 inset,0 -2px 3px #8fcaee inset;
+    background: -webkit-linear-gradient(top,#42a4e0,#2e88c0);
+    background: -moz-linear-gradient(top,#42a4e0,#2e88c0);
+    background: linear-gradient(top,#42a4e0,#2e88c0);
+}
+.clearBtn:hover{
+    background: -webkit-linear-gradient(top,#70bfef,#4097ce);
+    background: -moz-linear-gradient(top,#70bfef,#4097ce);
+    background: linear-gradient(top,#70bfef,#4097ce);
+}
+.clearBtn:active{
+    top:1px;
+    box-shadow: 0 1px 3px #114566 inset,0 3px 0 #fff;
+    background: -webkit-linear-gradient(top,#1a71a8,#1976b1);
+    background: -moz-linear-gradient(top,#1a71a8,#1976b1);
+    background: linear-gradient(top,#1a71a8,#1976b1);
 }
