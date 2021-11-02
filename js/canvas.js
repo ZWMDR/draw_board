@@ -1,5 +1,7 @@
 let canvasHeight = 1200;
 let canvasWidth = 800;
+const pixelPerUnitLength = 50;
+const spance=20;
 let lastToolId = "pencil";
 let currentToolId = "pencil";
 let currentLineWidth = {id: "line2px", width: 2};
@@ -18,16 +20,15 @@ let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
 let context = null;
 
+// 画坐标轴
 function drawCoordinateAxis() {
     let currentStyle = ctx.strokeStyle;
     let currentLineWidth = ctx.lineWidth;
     let currentFIllStyle = ctx.fillStyle;
     ctx.strokeStyle="#777777";
     ctx.fillStyle = "#777777";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.setLineDash([5]);
-    const spance=20;
-    let arrowSize=10;
     // 绘制Y轴
     ctx.beginPath();
     ctx.moveTo(canvasWidth/2,spance);
@@ -56,8 +57,40 @@ function drawCoordinateAxis() {
     ctx.fillStyle = currentFIllStyle;
     ctx.setLineDash([]);
 }
+// 画坐标刻度
 function drawCoordinateScale() {
-    
+    let currentStyle = ctx.strokeStyle;
+    let currentLineWidth = ctx.lineWidth;
+    let currentFIllStyle = ctx.fillStyle;
+    ctx.strokeStyle="#aaa";
+    ctx.fillStyle = "#aaa";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 10]);
+    ctx.beginPath();
+    // x坐标
+    for(let i = canvasWidth/2+pixelPerUnitLength/scaleRate.x; i < canvasWidth-spance; i += pixelPerUnitLength/scaleRate.x){
+        ctx.moveTo(i, spance);
+        ctx.lineTo(i, canvasHeight-spance);
+    }
+    for(let i = canvasWidth/2-pixelPerUnitLength/scaleRate.x; i > spance; i -= pixelPerUnitLength/scaleRate.x){
+        ctx.moveTo(i, spance);
+        ctx.lineTo(i, canvasHeight-spance);
+    }
+    // y坐标
+    for(let i = canvasHeight/2+pixelPerUnitLength/scaleRate.y; i < canvasHeight-spance; i += pixelPerUnitLength/scaleRate.y){
+        ctx.moveTo(spance, i);
+        ctx.lineTo(canvasWidth-spance, i);
+    }
+    for(let i = canvasHeight/2-pixelPerUnitLength/scaleRate.y; i > spance; i -= pixelPerUnitLength/scaleRate.y){
+        ctx.moveTo(spance, i);
+        ctx.lineTo(canvasWidth-spance, i);
+    }
+    ctx.stroke();
+    ctx.closePath();
+    ctx.lineWidth = currentLineWidth;
+    ctx.strokeStyle = currentStyle;
+    ctx.fillStyle = currentFIllStyle;
+    ctx.setLineDash([]);
 }
 
 function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜色
@@ -629,6 +662,7 @@ function reDrawCanvas(){
         }
     }
     drawCoordinateAxis();
+    drawCoordinateScale();
     ctx.lineWidth = currentLineWidth.width;
     ctx.strokeStyle = currentColor.value;
 }
@@ -704,8 +738,10 @@ window.onload = function (){
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
         drawCoordinateAxis();
+        drawCoordinateScale();
     }, false);
     drawCoordinateAxis();
+    drawCoordinateScale();
 }
 
 function selectEraserBox(isHide) {
