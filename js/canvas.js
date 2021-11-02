@@ -207,7 +207,7 @@ function eraserDraw(e) {
     else{ // 鼠标按下移动
         canvas.height = canvas.height;
         reDrawCanvas();
-        fill_LongRect(beginPoint, lastPoint, "#ffffff");
+        fill_Rect(beginPoint, lastPoint, "#fff");
         let currentLineWidth = ctx.lineWidth;
         ctx.lineWidth = 2;
         drawRect(beginPoint, endPoint);
@@ -216,8 +216,9 @@ function eraserDraw(e) {
             type: "Eraser",
             lineWidth: ctx.lineWidth,
             color: currentColor,
+            fillColor: "#fff",
             beginPoint: beginPoint,
-            endPoint: endPoint
+            endPoint: lastPoint
         });
     }
     lastPoint = beginPoint;
@@ -228,7 +229,7 @@ function eraserEnd(e) {
     let currentPoint = getPoint(e);
     if(currentPoint.x === beginPoint.x && currentPoint.y === beginPoint.y){  // 鼠标未移动
         let endPoint = {x: beginPoint.x+currentEraserWidth.width/2, y: beginPoint.y+currentEraserWidth.width/2};
-        fill_Rect(beginPoint, endPoint, "#ffffff");
+        fill_LongRect(beginPoint, lastPoint, "#ffffff");
         let currentLineWidth = ctx.lineWidth;
         ctx.lineWidth = 2;
         drawRect(beginPoint, endPoint);
@@ -445,13 +446,13 @@ function fill_Rect(beginPoint, endPoint, fillColor) {
     ctx.closePath();
     ctx.fillStyle = currentStyle;
 }
-function fill_LongRect(beginPoint, endPoint, height, fillColor) {
+function fill_LongRect(beginPoint, endPoint, fillColor) {
     let currentFillStyle = ctx.fillStyle;
     let currentLineStyle = ctx.strokeStyle;
     const halfWidth = currentEraserWidth.width/2;
-    ctx.fillStyle = "#888888";
+    ctx.fillStyle = fillColor;
     ctx.beginPath();
-    ctx.strokeStyle = "#888888";
+    ctx.strokeStyle = fillColor;
 
     let a = {x: 0, y: 0}, b = {x: 0, y: 0}, c = {x: 0, y: 0}, d = {x: 0, y: 0};
     if(beginPoint.y === endPoint.y){
@@ -478,10 +479,22 @@ function fill_LongRect(beginPoint, endPoint, height, fillColor) {
             rightPoint = endPoint;
             leftPoint = beginPoint;
         }
-        // a = {
-        //     x: rightPoint.x + ,
-        //     y:
-        // }
+        a = {
+            x: rightPoint.x + halfWidth * ((1 + 1 / Math.tan(alpha)) * Math.cos(alpha) - 1 / Math.sin(alpha)),
+            y: rightPoint.y - halfWidth * (1 + 1 / Math.tan(alpha)) * Math.tan(alpha)
+        };
+        b = {
+            x: rightPoint.x + halfWidth * ((1 + 1 / Math.tan(alpha)) * Math.cos(alpha) - 1 / Math.sin(alpha)),
+            y: rightPoint.y + halfWidth * (1 + 1 / Math.tan(alpha)) * Math.tan(alpha)
+        };
+        c = {
+            x: leftPoint.x - halfWidth * ((1 + 1 / Math.tan(alpha)) * Math.cos(alpha) - 1 / Math.sin(alpha)),
+            y: leftPoint.y + halfWidth * (1 + 1 / Math.tan(alpha)) * Math.tan(alpha)
+        };
+        d = {
+            x: leftPoint.x - halfWidth * ((1 + 1 / Math.tan(alpha)) * Math.cos(alpha) - 1 / Math.sin(alpha)),
+            y: leftPoint.y - halfWidth * (1 + 1 / Math.tan(alpha)) * Math.tan(alpha)
+        };
     }
     // ctx.fillRect(beginPoint.x, beginPoint.y, endPoint.x-beginPoint.x, height);
     ctx.moveTo(a.x, a.y);
@@ -534,7 +547,7 @@ function reDrawCanvas(){
             case "Circle": drawCircle(oneOp.beginPoint, oneOp.endPoint); break;
             case "Rect": drawRect(oneOp.beginPoint, oneOp.endPoint); break;
             case "Triangle": drawTriangle(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Eraser": fill_Rect(oneOp.beginPoint, oneOp.endPoint, "#ffffff"); break;
+            case "Eraser": fill_Rect(oneOp.beginPoint, oneOp.endPoint, oneOp.fillColor); break;
         }
     }
     drawCoordinateAxis();
