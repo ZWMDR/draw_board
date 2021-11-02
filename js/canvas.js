@@ -87,9 +87,9 @@ function onClickEraserWidth(e) {
     reDrawCanvas();
     switch (e.id){
         case "eraser10px": currentEraserWidth = {id:"eraser10px", width: 10}; break;
-        case "eraser20px": currentEraserWidth = {id:"eraser20px", width: 20}; break;
         case "eraser30px": currentEraserWidth = {id:"eraser30px", width: 30}; break;
         case "eraser50px": currentEraserWidth = {id:"eraser50px", width: 50}; break;
+        case "eraser80px": currentEraserWidth = {id:"eraser80px", width: 80}; break;
         default: currentEraserWidth = {id: "eraser10px", width: 10}; break;
     }
     setSelectImg(lastEraserWidth.id, currentEraserWidth.id);
@@ -198,7 +198,7 @@ function eraserDraw(e) {
     if(!drawFlag){ //鼠标移动，未按下
         canvas.height = canvas.height;
         reDrawCanvas();
-        fill_Rect(beginPoint, endPoint, "#ffffff");
+        drawEraser(beginPoint, currentEraserWidth.width/2);
         let currentLineWidth = ctx.lineWidth;
         ctx.lineWidth = 2;
         drawRect(beginPoint, endPoint);
@@ -207,39 +207,58 @@ function eraserDraw(e) {
     else{ // 鼠标按下移动
         canvas.height = canvas.height;
         reDrawCanvas();
-        fill_Rect(beginPoint, lastPoint, "#fff");
-        let currentLineWidth = ctx.lineWidth;
+        let xGap = beginPoint.x - lastPoint.x;
+        let yGap = beginPoint.y - lastPoint.y;
+        if(Math.abs(xGap) > currentEraserWidth.width || Math.abs(yGap) > currentEraserWidth.width){  // x轴或y轴向上位移超过橡皮擦宽度
+            let biggerGap = Math.abs(xGap) > Math.abs(yGap) ? xGap : yGap;
+            let times = Math.abs(biggerGap) / currentEraserWidth.width;
+            let startPoint = {x: 0, y: 0};
+            for(let i = 0; i < times; i++){
+                startPoint.x = lastPoint.x + xGap / times * i;
+                startPoint.y = lastPoint.y + yGap / times * i;
+                // console.log(i, startPoint);
+                // fill_Rect(startPoint, endPoint, "#ffffff");
+                drawEraser(startPoint, currentEraserWidth.width/2);
+                canvasAllOps.push({
+                    type: "Eraser",
+                    lineWidth: ctx.lineWidth,
+                    color: currentColor,
+                    beginPoint: startPoint,
+                    eraserWidth: currentEraserWidth
+                });
+            }
+        }else {
+            drawEraser(beginPoint, currentEraserWidth.width/2);
+            canvasAllOps.push({
+                type: "Eraser",
+                lineWidth: ctx.lineWidth,
+                color: currentColor,
+                beginPoint: beginPoint,
+                eraserWidth: currentEraserWidth
+            });
+        }
         ctx.lineWidth = 2;
         drawRect(beginPoint, endPoint);
-        ctx.lineWidth = currentLineWidth;
-        canvasAllOps.push({
-            type: "Eraser",
-            lineWidth: ctx.lineWidth,
-            color: currentColor,
-            fillColor: "#fff",
-            beginPoint: beginPoint,
-            endPoint: lastPoint
-        });
+        ctx.lineWidth = currentLineWidth.width;
     }
     lastPoint = beginPoint;
 }
 function eraserEnd(e) {
     if(!drawFlag) return;
     drawFlag = false;
-    let currentPoint = getPoint(e);
-    if(currentPoint.x === beginPoint.x && currentPoint.y === beginPoint.y){  // 鼠标未移动
+    beginPoint = getPoint(e);
+    if(beginPoint.x === lastPoint.x && beginPoint.y === lastPoint.y){  // 鼠标未移动
         let endPoint = {x: beginPoint.x+currentEraserWidth.width/2, y: beginPoint.y+currentEraserWidth.width/2};
-        fill_LongRect(beginPoint, lastPoint, "#ffffff");
-        let currentLineWidth = ctx.lineWidth;
+        drawEraser(beginPoint, currentEraserWidth.width/2);
         ctx.lineWidth = 2;
         drawRect(beginPoint, endPoint);
-        ctx.lineWidth = currentLineWidth;
+        ctx.lineWidth = currentLineWidth.width;
         canvasAllOps.push({
             type: "Eraser",
             lineWidth: ctx.lineWidth,
             color: currentColor,
             beginPoint: beginPoint,
-            endPoint: endPoint
+            eraserWidth: currentEraserWidth
         });
     }
 }
@@ -351,6 +370,30 @@ function rectEnd(e) {
     });
 }
 
+// 星形工具
+function drawStar(beginPoint, endPoint){
+    ctx.beginPath();
+    let R=getDistance(beginPoint, endPoint);
+    let r=R/2;
+    let x;
+    let y;
+    for (let i = 0; i < 5; i++){
+        // 外围凸出的每个点坐标
+        x = Math.cos((18 + 72*i) / 180 * Math.PI) * R+beginPoint.x
+        y = -Math.sin((18 + 72*i) / 180 * Math.PI) * R+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
+        ctx.lineTo(x, y)
+        // 外围凹下去的每个点坐标
+        x = Math.cos((54 + 72*i) / 180 * Math.PI) * r+beginPoint.x
+        y = -Math.sin((54 + 72*i) / 180 * Math.PI) * r+beginPoint.y // canvas中y轴的正向方向与直角坐标系相反
+        ctx.lineTo(x, y)
+
+    }
+    ctx.moveTo(x, y);
+    ctx.lineTo(Math.cos(18/180 * Math.PI) * R+beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R+beginPoint.y );
+    ctx.stroke();
+    ctx.closePath();
+
+}
 
 // 绘制二次贝塞尔曲线，传入参数：
 // beginPoint 起始点
@@ -382,6 +425,12 @@ function drawLine(beginPoint, endPoint){
 function drawCircle(beginPoint, endPoint) {
     ctx.beginPath();
     ctx.arc(beginPoint.x, beginPoint.y, getDistance(beginPoint, endPoint), 0, 2*Math.PI, true);
+    ctx.stroke();
+    ctx.closePath();
+}
+function drawEraser(centerPoint, halfWidth) {
+    ctx.beginPath();
+    ctx.clearRect(centerPoint.x-halfWidth, centerPoint.y-halfWidth, halfWidth*2, halfWidth*2);
     ctx.stroke();
     ctx.closePath();
 }
@@ -547,7 +596,8 @@ function reDrawCanvas(){
             case "Circle": drawCircle(oneOp.beginPoint, oneOp.endPoint); break;
             case "Rect": drawRect(oneOp.beginPoint, oneOp.endPoint); break;
             case "Triangle": drawTriangle(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Eraser": fill_Rect(oneOp.beginPoint, oneOp.endPoint, oneOp.fillColor); break;
+            case "star": drawStar(oneOp.beginPoint, oneOp.endPoint); break;
+            case "Eraser": drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2); break;
         }
     }
     drawCoordinateAxis();
