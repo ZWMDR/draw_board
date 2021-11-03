@@ -11,7 +11,8 @@
 <!--    <link rel="stylesheet" type="text/css" href="../css/triangle_background.css">-->
     <link rel="stylesheet" type="text/css" href="../css/tools_select_box.css">
     <link rel="stylesheet" type="text/css" href="../css/canvas_background.css">
-    <link rel="stylesheet" type="text/css" href="../css/main_canvas.css">
+    <link rel="stylesheet" type="text/css" href="../css/canvas.css">
+    <link rel="stylesheet" type="text/css" href="../css/coordinateHint.css">
     <title>几何画板</title>
 </head>
 <body>
@@ -158,9 +159,11 @@
         <div class="clearCanvasBox" id="clearCanvasBox">
             <button id="clearBtn" class="clearBtn">清除画布</button>
         </div>
-        <div class="canvasBox" id="canvasBox">
-            <canvas class="mainCanvas" id="mainCanvas" width="1600px" height="900px"></canvas>
+        <div class="coordinateHintBox" id="coordinateHintBox">
+            <span class="coordinateHintSpan" id="coordinateHintSpan"></span>
         </div>
+        <canvas class="mainCanvas" id="backCanvas" width="1600px" height="900px"></canvas>
+        <canvas class="mainCanvas" id="mainCanvas" width="1600px" height="900px"></canvas>
     </div>
 </body>
 </html>

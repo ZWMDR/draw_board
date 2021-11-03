@@ -8,8 +8,8 @@ let currentLineWidth = {id: "line2px", width: 2};
 let lastLineWidth = {id: "line2px", width: 2};
 let currentEraserWidth = {id: "eraser10px", width: 10};
 let lastEraserWidth = {id: "eraser10px", width: 10};
-let canvas;
-let ctx;
+let canvas, backCanvas;
+let ctx, backCtx;
 let beginPoint = {x: 0, y: 0};
 let lastPoint = {x: 0, y: 0};
 let points = [];
@@ -18,79 +18,80 @@ let canvasAllOps = [];
 let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
-let context = null;
+
 
 // 画坐标轴
 function drawCoordinateAxis() {
-    let currentStyle = ctx.strokeStyle;
-    let currentLineWidth = ctx.lineWidth;
-    let currentFIllStyle = ctx.fillStyle;
-    ctx.strokeStyle="#777777";
-    ctx.fillStyle = "#777777";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5]);
+    backCtx.strokeStyle="#777777";
+    backCtx.fillStyle = "#777777";
+    backCtx.lineWidth = 2;
+    backCtx.setLineDash([5]);
     // 绘制Y轴
-    ctx.beginPath();
-    ctx.moveTo(canvasWidth/2,spance);
-    ctx.lineTo(canvasWidth/2,canvasHeight-spance);
-    ctx.stroke();
+    backCtx.beginPath();
+    backCtx.moveTo(canvasWidth/2,spance);
+    backCtx.lineTo(canvasWidth/2,canvasHeight-spance);
+    backCtx.stroke();
     //2.绘制X轴
-    ctx.beginPath();
-    ctx.moveTo(spance,canvasHeight/2);
-    ctx.lineTo(canvasWidth-spance,canvasHeight/2);
-    ctx.stroke();
+    backCtx.beginPath();
+    backCtx.moveTo(spance,canvasHeight/2);
+    backCtx.lineTo(canvasWidth-spance,canvasHeight/2);
+    backCtx.stroke();
     //3.绘制X轴的箭头
-    ctx.moveTo(canvasWidth-spance,canvasHeight/2-5);
-    ctx.lineTo(canvasWidth-spance,canvasHeight/2+5);
-    ctx.lineTo(canvasWidth-spance+10,canvasHeight/2);
-    ctx.closePath();
-    ctx.fill();
+    backCtx.moveTo(canvasWidth-spance,canvasHeight/2-5);
+    backCtx.lineTo(canvasWidth-spance,canvasHeight/2+5);
+    backCtx.lineTo(canvasWidth-spance+10,canvasHeight/2);
+    backCtx.closePath();
+    backCtx.fill();
     //绘制Y轴箭头
-    ctx.moveTo(canvasWidth/2-5,spance);
-    ctx.lineTo(canvasWidth/2+5,spance);
-    ctx.lineTo(canvasWidth/2,spance-10);
-    ctx.closePath();
-    ctx.fill();
+    backCtx.moveTo(canvasWidth/2-5,spance);
+    backCtx.lineTo(canvasWidth/2+5,spance);
+    backCtx.lineTo(canvasWidth/2,spance-10);
+    backCtx.closePath();
+    backCtx.fill();
 
-    ctx.lineWidth = currentLineWidth;
-    ctx.strokeStyle = currentStyle;
-    ctx.fillStyle = currentFIllStyle;
-    ctx.setLineDash([]);
+    backCtx.setLineDash([]);
 }
 // 画坐标刻度
 function drawCoordinateScale() {
-    let currentStyle = ctx.strokeStyle;
-    let currentLineWidth = ctx.lineWidth;
-    let currentFIllStyle = ctx.fillStyle;
-    ctx.strokeStyle="#aaa";
-    ctx.fillStyle = "#aaa";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 10]);
-    ctx.beginPath();
+    backCtx.strokeStyle="#aaa";
+    backCtx.lineWidth = 1;
+    backCtx.setLineDash([5, 10]);
+    backCtx.beginPath();
     // x坐标
     for(let i = canvasWidth/2+pixelPerUnitLength/scaleRate.x; i < canvasWidth-spance; i += pixelPerUnitLength/scaleRate.x){
-        ctx.moveTo(i, spance);
-        ctx.lineTo(i, canvasHeight-spance);
+        backCtx.moveTo(i, spance);
+        backCtx.lineTo(i, canvasHeight-spance);
     }
     for(let i = canvasWidth/2-pixelPerUnitLength/scaleRate.x; i > spance; i -= pixelPerUnitLength/scaleRate.x){
-        ctx.moveTo(i, spance);
-        ctx.lineTo(i, canvasHeight-spance);
+        backCtx.moveTo(i, spance);
+        backCtx.lineTo(i, canvasHeight-spance);
     }
     // y坐标
     for(let i = canvasHeight/2+pixelPerUnitLength/scaleRate.y; i < canvasHeight-spance; i += pixelPerUnitLength/scaleRate.y){
-        ctx.moveTo(spance, i);
-        ctx.lineTo(canvasWidth-spance, i);
+        backCtx.moveTo(spance, i);
+        backCtx.lineTo(canvasWidth-spance, i);
     }
     for(let i = canvasHeight/2-pixelPerUnitLength/scaleRate.y; i > spance; i -= pixelPerUnitLength/scaleRate.y){
-        ctx.moveTo(spance, i);
-        ctx.lineTo(canvasWidth-spance, i);
+        backCtx.moveTo(spance, i);
+        backCtx.lineTo(canvasWidth-spance, i);
     }
-    ctx.stroke();
-    ctx.closePath();
-    ctx.lineWidth = currentLineWidth;
-    ctx.strokeStyle = currentStyle;
-    ctx.fillStyle = currentFIllStyle;
-    ctx.setLineDash([]);
+    backCtx.stroke();
+    backCtx.closePath();
+    backCtx.setLineDash([]);
+}
+// 鼠标显示横纵坐标
+function mouseCoordinateRuler(currentPoint) {
+    if(drawFlag){
+        $("#coordinateHintBox").hide();
+        return;
+    }
+    $("#coordinateHintBox").show();
+    let xCoord = ((currentPoint.x - canvasWidth/2) / pixelPerUnitLength * scaleRate.x).toFixed(1);
+    let yCoord = ((canvasHeight/2 - currentPoint.y) / pixelPerUnitLength * scaleRate.y).toFixed(1);
+    let pageCoord = canvas2PageCoordinate(currentPoint);
+    $("#coordinateHintBox").css("left", (pageCoord.x-35)+"px");
+    $("#coordinateHintBox").css("top", (pageCoord.y-30)+"px");
+    $("#coordinateHintSpan").text(xCoord + "," + yCoord);
 }
 
 function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜色
@@ -661,8 +662,6 @@ function reDrawCanvas(){
             case "Eraser": drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2); break;
         }
     }
-    drawCoordinateAxis();
-    drawCoordinateScale();
     ctx.lineWidth = currentLineWidth.width;
     ctx.strokeStyle = currentColor.value;
 }
@@ -673,13 +672,21 @@ function getPoint(e){
         y: e.clientY - canvas.offsetTop
     }
 }
+function canvas2PageCoordinate(currentPoint) {
+    return {
+        x: currentPoint.x + canvas.offsetLeft,
+        y: currentPoint.y + canvas.offsetTop
+    };
+}
 function getDistance(pointA, pointB) {
     return Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
 }
 
 window.onload = function (){
     canvas = document.getElementById("mainCanvas");
+    backCanvas = document.getElementById("backCanvas");
     ctx = canvas.getContext("2d");
+    backCtx = backCanvas.getContext("2d");
     ctx.lineWidth = currentLineWidth.width;
     canvasHeight = canvas.height;
     canvasWidth = canvas.width;
@@ -708,6 +715,7 @@ window.onload = function (){
             case "star": starDraw(e); break;
             case "rhomboid": break;
         }
+        mouseCoordinateRuler(getPoint(e));
     }, false);
     canvas.addEventListener("mouseup", function (e){
         switch (currentToolId) {
@@ -737,8 +745,11 @@ window.onload = function (){
     }, false);
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
+        canvasAllOps = [];
         drawCoordinateAxis();
         drawCoordinateScale();
+        ctx.lineWidth = currentLineWidth.width;
+        ctx.strokeStyle = currentColor.value;
     }, false);
     drawCoordinateAxis();
     drawCoordinateScale();
