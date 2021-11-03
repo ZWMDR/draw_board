@@ -8,8 +8,8 @@ let currentLineWidth = {id: "line2px", width: 2};
 let lastLineWidth = {id: "line2px", width: 2};
 let currentEraserWidth = {id: "eraser10px", width: 10};
 let lastEraserWidth = {id: "eraser10px", width: 10};
-let canvas, backCanvas;
-let ctx, backCtx;
+let canvas, backCanvas, coordCanvas;
+let ctx, backCtx, coordCtx;
 let beginPoint = {x: 0, y: 0};
 let lastPoint = {x: 0, y: 0};
 let points = [];
@@ -31,25 +31,31 @@ function drawCoordinateAxis() {
     backCtx.moveTo(canvasWidth/2,spance);
     backCtx.lineTo(canvasWidth/2,canvasHeight-spance);
     backCtx.stroke();
-    //2.绘制X轴
+    // 绘制X轴
     backCtx.beginPath();
     backCtx.moveTo(spance,canvasHeight/2);
     backCtx.lineTo(canvasWidth-spance,canvasHeight/2);
     backCtx.stroke();
-    //3.绘制X轴的箭头
+    // 绘制X轴的箭头
     backCtx.moveTo(canvasWidth-spance,canvasHeight/2-5);
     backCtx.lineTo(canvasWidth-spance,canvasHeight/2+5);
     backCtx.lineTo(canvasWidth-spance+10,canvasHeight/2);
     backCtx.closePath();
     backCtx.fill();
-    //绘制Y轴箭头
+    // 绘制Y轴箭头
     backCtx.moveTo(canvasWidth/2-5,spance);
     backCtx.lineTo(canvasWidth/2+5,spance);
     backCtx.lineTo(canvasWidth/2,spance-10);
     backCtx.closePath();
     backCtx.fill();
 
+    backCtx.lineWidth = 1;
     backCtx.setLineDash([]);
+    backCtx.font = "italic 20px Times New Roman";
+    backCtx.strokeStyle = "#4d0099";
+    backCtx.textAlign = "center";
+    backCtx.strokeText("x", canvasWidth-spance-10, canvasHeight/2-10);
+    backCtx.strokeText("y", canvasWidth/2+10, spance+10);
 }
 // 画坐标刻度
 function drawCoordinateScale() {
@@ -685,8 +691,10 @@ function getDistance(pointA, pointB) {
 window.onload = function (){
     canvas = document.getElementById("mainCanvas");
     backCanvas = document.getElementById("backCanvas");
+    coordCanvas = document.getElementById("coordCanvas");
     ctx = canvas.getContext("2d");
     backCtx = backCanvas.getContext("2d");
+    coordCtx = backCanvas.getContext("2d");
     ctx.lineWidth = currentLineWidth.width;
     canvasHeight = canvas.height;
     canvasWidth = canvas.width;
