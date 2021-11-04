@@ -317,6 +317,7 @@ function eraserStart(e){
     drawFlag = true;
     beginPoint = getPoint(e);
     lastPoint = beginPoint;
+    ctx.setLineDash([]);
 }
 function eraserDraw(e) {
     beginPoint = getPoint(e);
@@ -384,6 +385,7 @@ function eraserEnd(e) {
             eraserWidth: currentEraserWidth
         });
     }
+    ctx.setLineDash(currentLineStyle.dashes);
 }
 
 
