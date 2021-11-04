@@ -171,6 +171,7 @@ function onClickPen(e){  // "../images/eraser_select.png"
         }
         case "rhomboid":{
             selectLineTypeBox(false, 90, 365);
+            points = [];
             break;
         }
     }
@@ -509,7 +510,6 @@ function starDraw(e){
     reDrawCanvas();
     drawStar(beginPoint, lastPoint);
 }
-
 function starEnd(e){
     if(!drawFlag) return;
     drawFlag = false;
@@ -522,6 +522,50 @@ function starEnd(e){
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
+}
+
+// 任意四边形
+function rhomboidStart(e) {
+    drawFlag = true;
+}
+function rhomboidDraw(e) {
+    // if(!drawFlag) return;
+    if(points.length > 0) {
+        canvas.height = canvas.height;
+        reDrawCanvas();
+        reDrawRhomboid(points, true);
+        let currentPoint = getPoint(e);
+        drawLine(points[points.length-1], currentPoint);
+    }
+}
+function rhomboidEnd(e){
+    if(!drawFlag) return;
+    let currentPoint = getPoint(e);
+    if (points.length > 2 && getDistance(points[0], currentPoint) < currentLineWidth.width + 5) {
+        points.push(points[0]);
+        rhomboidFinish();
+        return;
+    }
+    fillCircle(currentPoint, currentLineWidth.width / 2 + 2, currentColor.value);
+    points.push(currentPoint);
+    drawFlag = false;
+}
+function rhomboidFinish(){
+    drawFlag = false;
+    canvasAllOps.push({
+        type: "Rhomboid",
+        lineWidth: ctx.lineWidth,
+        color: currentColor,
+        lineStyle: currentLineStyle,
+        points: points
+    });
+    rhomboidCancel();
+}
+function rhomboidCancel(){
+    points = [];
+    drawFlag = false;
+    canvas.height = canvas.height;
+    reDrawCanvas();
 }
 
 // 绘制二次贝塞尔曲线，传入参数：
@@ -556,6 +600,13 @@ function drawCircle(beginPoint, endPoint) {
     ctx.beginPath();
     ctx.arc(beginPoint.x, beginPoint.y, getDistance(beginPoint, endPoint), 0, 2*Math.PI, true);
     ctx.stroke();
+    ctx.closePath();
+}
+function fillCircle(beginPoint, radius, fillColor) {
+    ctx.beginPath();
+    ctx.arc(beginPoint.x, beginPoint.y, radius, 0, 2*Math.PI, true);
+    ctx.fillStyle = fillColor;
+    ctx.fill();
     ctx.closePath();
 }
 function drawEraser(centerPoint, halfWidth) {
@@ -737,6 +788,22 @@ function drawStar(beginPoint, endPoint){
     ctx.closePath();
 }
 
+function reDrawRhomboid(points, isDrawing){
+    let length = points.length;
+    if(length > 1) {
+        for (let i = 0; i < length - 1; i++) {
+            drawLine(points[i], points[i + 1]);
+        }
+    }
+    if(isDrawing) {
+        for (let i = 0; i < length; i++) {
+            fillCircle(points[i], currentLineWidth.width / 2 + 2, currentColor.value);
+        }
+    }else {
+        drawLine(points[length-1], points[0]);
+    }
+}
+
 function reDrawCanvas(){
     for(let i = 0; i < canvasAllOps.length; i++){
         let oneOp = canvasAllOps[i];
@@ -781,6 +848,13 @@ function reDrawCanvas(){
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawStar(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Rhomboid": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                reDrawRhomboid(oneOp.points, false);
                 break;
             }
             case "Eraser": {
@@ -848,6 +922,7 @@ window.onload = function (){
                 starStart(e);
                 break;
             case "rhomboid":
+                rhomboidStart(e);
                 break;
         }
     }, false);
@@ -878,6 +953,7 @@ window.onload = function (){
                 starDraw(e);
                 break;
             case "rhomboid":
+                rhomboidDraw(e);
                 break;
         }
         mouseCoordinateRuler(getPoint(e));
@@ -909,6 +985,7 @@ window.onload = function (){
                 starEnd(e);
                 break;
             case "rhomboid":
+                rhomboidEnd(e);
                 break;
         }
     }, false);
@@ -939,6 +1016,7 @@ window.onload = function (){
                 starEnd(e);
                 break;
             case "rhomboid":
+                rhomboidCancel();
                 break;
         }
         $("#coordinateHintBox").hide();
