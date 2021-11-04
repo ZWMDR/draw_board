@@ -1,9 +1,9 @@
 .formulaInputBox{
-    height: 140px;
-    width: 55px;
+    height: 600px;
+    width: 300px;
     position: absolute;
     top: 0;
-    right: 0;
+    left: 1590px;
     padding: 5px;
 }
 

@@ -102,7 +102,6 @@ function mouseCoordinateRuler(currentPoint) {
     $("#coordinateHintBox").css("left", (pageCoord.x-35)+"px");
     $("#coordinateHintBox").css("top", (pageCoord.y-30)+"px");
     $("#coordinateHintSpan").text(xCoord + "," + yCoord);
-
 }
 // 在坐标轴上标度横纵坐标
 function mouseCoordinateAxis(xCoord, yCoord, currentPoint) {
@@ -943,6 +942,7 @@ window.onload = function (){
                 break;
         }
         $("#coordinateHintBox").hide();
+        coordCanvas.height = coordCanvas.height;
     }, false);
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
