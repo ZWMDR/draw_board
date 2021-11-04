@@ -18,6 +18,7 @@ let canvasAllOps = [];
 let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
+let lineTypeBox = false;
 
 
 // 画坐标轴
@@ -87,19 +88,42 @@ function drawCoordinateScale() {
 }
 // 鼠标显示横纵坐标
 function mouseCoordinateRuler(currentPoint) {
+    let xCoord = ((currentPoint.x - canvasWidth/2) / pixelPerUnitLength * scaleRate.x).toFixed(1);
+    let yCoord = ((canvasHeight/2 - currentPoint.y) / pixelPerUnitLength * scaleRate.y).toFixed(1);
+    mouseCoordinateAxis(xCoord, yCoord, currentPoint);
     if(drawFlag){
         $("#coordinateHintBox").hide();
         return;
     }
     $("#coordinateHintBox").show();
-    let xCoord = ((currentPoint.x - canvasWidth/2) / pixelPerUnitLength * scaleRate.x).toFixed(1);
-    let yCoord = ((canvasHeight/2 - currentPoint.y) / pixelPerUnitLength * scaleRate.y).toFixed(1);
     let pageCoord = canvas2PageCoordinate(currentPoint);
     $("#coordinateHintBox").css("left", (pageCoord.x-35)+"px");
     $("#coordinateHintBox").css("top", (pageCoord.y-30)+"px");
     $("#coordinateHintSpan").text(xCoord + "," + yCoord);
-}
 
+}
+// 在坐标轴上标度横纵坐标
+function mouseCoordinateAxis(xCoord, yCoord, currentPoint) {
+    coordCanvas.height = coordCanvas.height;
+    coordCtx.lineWidth = 0.7;
+    coordCtx.strokeStyle = "#4d0099";
+    coordCtx.setLineDash([5, 15]);
+    coordCtx.beginPath();
+    coordCtx.moveTo(currentPoint.x, currentPoint.y);
+    coordCtx.lineTo(currentPoint.x, canvasHeight/2);
+    coordCtx.moveTo(currentPoint.x, currentPoint.y);
+    coordCtx.lineTo(canvasWidth/2, currentPoint.y);
+    coordCtx.stroke();
+    coordCtx.closePath();
+
+    coordCtx.lineWidth = 0.7;
+    coordCtx.setLineDash([]);
+    coordCtx.font = "italic 14px Times New Roman";
+    coordCtx.strokeStyle = "#4d0099";
+    coordCtx.textAlign = "center";
+    coordCtx.strokeText(xCoord, currentPoint.x, canvasHeight/2-10);
+    coordCtx.strokeText(yCoord, canvasWidth/2+10, currentPoint.y);
+}
 function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜色
     document.getElementById(lastID).src = "../images/" + lastID + ".png";
     document.getElementById(currentID).src = "../images/" + currentID + "_select.png";
@@ -111,6 +135,16 @@ function onClickPen(e){  // "../images/eraser_select.png"
     currentToolId = e.id;
     setSelectImg(lastToolId, currentToolId);
     lastToolId = currentToolId;
+    switch (currentToolId) {
+        case "pencil":{
+            selectLineTypeBox(false, 80, 40);
+            break;
+        }
+        case "pen":{
+            selectLineTypeBox(false, 80, 60);
+            break;
+        }
+    }
 }
 function onClickLineWidth(e) {
     canvas.height = canvas.height;
@@ -694,68 +728,135 @@ window.onload = function (){
     coordCanvas = document.getElementById("coordCanvas");
     ctx = canvas.getContext("2d");
     backCtx = backCanvas.getContext("2d");
-    coordCtx = backCanvas.getContext("2d");
+    coordCtx = coordCanvas.getContext("2d");
     ctx.lineWidth = currentLineWidth.width;
     canvasHeight = canvas.height;
     canvasWidth = canvas.width;
-    canvas.addEventListener("mousedown", function (e){
+    canvas.addEventListener("mousedown", function (e){ // 鼠标按下
         switch (currentToolId) {
-            case "pencil": pencilMouseStart(e);break; //铅笔
-            case "pen": pencilMouseStart(e); break;
-            case "eraser": eraserStart(e); break;
-            case "straightLine": straightLineStart(e); break;
-            case "circle": circleStart(e); break;
-            case "rectangle": rectStart(e); break;
-            case "triangle": triangleStart(e); break;
-            case "star": starStart(e); break;
-            case "rhomboid": break;
+            case "pencil":
+                pencilMouseStart(e);
+                break; //铅笔
+            case "pen":
+                pencilMouseStart(e);
+                break;
+            case "eraser":
+                eraserStart(e);
+                break;
+            case "straightLine":
+                straightLineStart(e);
+                break;
+            case "circle":
+                circleStart(e);
+                break;
+            case "rectangle":
+                rectStart(e);
+                break;
+            case "triangle":
+                triangleStart(e);
+                break;
+            case "star":
+                starStart(e);
+                break;
+            case "rhomboid":
+                break;
         }
     }, false);
-    canvas.addEventListener("mousemove", function (e) {
+    canvas.addEventListener("mousemove", function (e) { // 鼠标移动
         switch (currentToolId) {
-            case "pencil": pencilDraw(e); break;
-            case "pen": penDraw(e); break;
-            case "eraser": eraserDraw(e); break;
-            case "straightLine": straightLineMove(e); break;
-            case "circle": circleDraw(e); break;
-            case "rectangle": rectDraw(e); break;
-            case "triangle": triangleDraw(e); break;
-            case "star": starDraw(e); break;
-            case "rhomboid": break;
+            case "pencil":
+                pencilDraw(e);
+                break;
+            case "pen":
+                penDraw(e);
+                break;
+            case "eraser":
+                eraserDraw(e);
+                break;
+            case "straightLine":
+                straightLineMove(e);
+                break;
+            case "circle":
+                circleDraw(e);
+                break;
+            case "rectangle":
+                rectDraw(e);
+                break;
+            case "triangle":
+                triangleDraw(e);
+                break;
+            case "star":
+                starDraw(e);
+                break;
+            case "rhomboid":
+                break;
         }
         mouseCoordinateRuler(getPoint(e));
     }, false);
-    canvas.addEventListener("mouseup", function (e){
+    canvas.addEventListener("mouseup", function (e){ // 鼠标抬起
         switch (currentToolId) {
-            case "pencil": pencilMouseEnd(e); break;
-            case "pen": pencilMouseEnd(e); break;
-            case "eraser": eraserEnd(e); break;
-            case "straightLine": straightLineEnd(e); break;
-            case "circle": circleEnd(e); break;
-            case "rectangle": rectEnd(e); break;
-            case "triangle": triangleEnd(e); break;
-            case "star": starEnd(e); break;
-            case "rhomboid": break;
+            case "pencil":
+                pencilMouseEnd(e);
+                break;
+            case "pen":
+                pencilMouseEnd(e);
+                break;
+            case "eraser":
+                eraserEnd(e);
+                break;
+            case "straightLine":
+                straightLineEnd(e);
+                break;
+            case "circle":
+                circleEnd(e);
+                break;
+            case "rectangle":
+                rectEnd(e);
+                break;
+            case "triangle":
+                triangleEnd(e);
+                break;
+            case "star":
+                starEnd(e);
+                break;
+            case "rhomboid":
+                break;
         }
     }, false);
-    canvas.addEventListener("mouseleave", function (e){
+    canvas.addEventListener("mouseleave", function (e){ // 鼠标离开画布
         switch (currentToolId){
-            case "pencil": pencilMouseEnd(e); break;
-            case "pen": pencilMouseEnd(e); break;
-            case "eraser": eraserEnd(e); break;
-            case "straightLine": straightLineEnd(e); break;
-            case "circle": circleEnd(e); break;
-            case "rectangle": rectEnd(e); break;
-            case "triangle": triangleEnd(e); break;
-            case "star": starEnd(e); break;
-            case "rhomboid": break;
+            case "pencil":
+                pencilMouseEnd(e);
+                break;
+            case "pen":
+                pencilMouseEnd(e);
+                break;
+            case "eraser":
+                eraserEnd(e);
+                break;
+            case "straightLine":
+                straightLineEnd(e);
+                break;
+            case "circle":
+                circleEnd(e);
+                break;
+            case "rectangle":
+                rectEnd(e);
+                break;
+            case "triangle":
+                triangleEnd(e);
+                break;
+            case "star":
+                starEnd(e);
+                break;
+            case "rhomboid":
+                break;
         }
+        $("#coordinateHintBox").hide();
     }, false);
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
         canvasAllOps = [];
-        drawCoordinateAxis();
-        drawCoordinateScale();
         ctx.lineWidth = currentLineWidth.width;
         ctx.strokeStyle = currentColor.value;
     }, false);
@@ -804,9 +905,26 @@ function selectEraserBox(isHide) {
     }
 
 }
+function selectLineTypeBox(isHide, left, top) {
+    if(isHide){ // 隐藏
+        if(!lineTypeBox) return;
+        $("#lineTypeSelectBox").css("left",left+"px");
+        $("#lineTypeSelectBox").css("top",top+"px");
+        $("#lineTypeSelectBox").hide();
+        lineTypeBox = false;
+    }else{ // 显示
+        if(lineTypeBox) return;
+        $("#lineTypeSelectBox").css("left",left+"px");
+        $("#lineTypeSelectBox").css("top",top+"px");
+        $("#lineTypeSelectBox").show();
+        lineTypeBox = true;
+        // console.log("show");
+    }
+}
 
 $(document).ready(function(){
     selectEraserBox(true);
+    $("#lineTypeSelectBox").hide();
 
     $("#eraser").click(function(){
         selectEraserBox(false);
