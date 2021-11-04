@@ -388,7 +388,6 @@ function eraserEnd(e) {
     ctx.setLineDash(currentLineStyle.dashes);
 }
 
-
 // 直线工具
 function straightLineStart(e) {
     beginPoint = getPoint(e);
@@ -401,7 +400,6 @@ function straightLineMove(e){
     canvas.height = canvas.height;
     reDrawCanvas();
     drawLine(beginPoint, lastPoint);
-
 }
 function straightLineEnd(e) {
     if(!drawFlag) return;
