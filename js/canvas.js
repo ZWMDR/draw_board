@@ -18,6 +18,8 @@ let canvasAllOps = [];
 let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
+let currentLineStyle = {id: "solid", dashes: []};
+let lastLineStyle = {id: "solid", dashes: []};
 let lineTypeBox = false;
 
 
@@ -137,11 +139,39 @@ function onClickPen(e){  // "../images/eraser_select.png"
     lastToolId = currentToolId;
     switch (currentToolId) {
         case "pencil":{
-            selectLineTypeBox(false, 80, 40);
+            selectLineTypeBox(false, 90, 30);
             break;
         }
         case "pen":{
-            selectLineTypeBox(false, 80, 60);
+            selectLineTypeBox(false, 90, 70);
+            break;
+        }
+        case "eraser":{
+            selectLineTypeBox(true, 0, 0);
+            break;
+        }
+        case "circle":{
+            selectLineTypeBox(false, 90, 190);
+            break;
+        }
+        case "straightLine":{
+            selectLineTypeBox(false, 90, 225);
+            break;
+        }
+        case "triangle":{
+            selectLineTypeBox(false, 90, 255);
+            break;
+        }
+        case "rectangle":{
+            selectLineTypeBox(false, 90, 290);
+            break;
+        }
+        case "star":{
+            selectLineTypeBox(false, 90, 330);
+            break;
+        }
+        case "rhomboid":{
+            selectLineTypeBox(false, 90, 365);
             break;
         }
     }
@@ -200,6 +230,25 @@ function onClickColor(e) {
     document.getElementById(lastColor.id).className = "toolsImg";
     lastColor = currentColor;
     ctx.strokeStyle = currentColor.value;
+}
+function onClickLineStyle(e) {
+    switch (e.id){
+        case "solid": currentLineStyle = {id: "solid", dashes: []}; break;
+        case "dashes_2_2": currentLineStyle = {id: "dashes_2_2", dashes: [2,2]}; break;
+        case "dashes_5_5": currentLineStyle = {id: "dashes_5_5", dashes: [5,5]}; break;
+        case "dashes_5_10": currentLineStyle = {id: "dashes_5_10", dashes: [5,10]}; break;
+    }
+    // document.getElementById(e.id).parentNode.className = "colorSelectLiSelect";
+    // document.getElementById(e.id).className = "toolsImgSelect";
+    // document.getElementById(e.id).width = 12;
+    // document.getElementById(e.id).height = 12;
+    // document.getElementById(lastLineStyle.id).parentNode.className = "colorSelectLi";
+    // document.getElementById(lastLineStyle.id).width = 15;
+    // document.getElementById(lastLineStyle.id).height = 15;
+    // document.getElementById(lastLineStyle.id).className = "toolsImg";
+    setSelectImg(lastLineStyle.id, currentLineStyle.id);
+    ctx.setLineDash(currentLineStyle.dashes);
+    lastLineStyle = currentLineStyle;
 }
 
 // 铅笔
@@ -268,7 +317,6 @@ function eraserStart(e){
     drawFlag = true;
     beginPoint = getPoint(e);
     lastPoint = beginPoint;
-
 }
 function eraserDraw(e) {
     beginPoint = getPoint(e);
@@ -300,7 +348,6 @@ function eraserDraw(e) {
                 canvasAllOps.push({
                     type: "Eraser",
                     lineWidth: ctx.lineWidth,
-                    color: currentColor,
                     beginPoint: startPoint,
                     eraserWidth: currentEraserWidth
                 });
@@ -310,7 +357,6 @@ function eraserDraw(e) {
             canvasAllOps.push({
                 type: "Eraser",
                 lineWidth: ctx.lineWidth,
-                color: currentColor,
                 beginPoint: beginPoint,
                 eraserWidth: currentEraserWidth
             });
@@ -334,7 +380,6 @@ function eraserEnd(e) {
         canvasAllOps.push({
             type: "Eraser",
             lineWidth: ctx.lineWidth,
-            color: currentColor,
             beginPoint: beginPoint,
             eraserWidth: currentEraserWidth
         });
@@ -364,6 +409,7 @@ function straightLineEnd(e) {
         type: "Line",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
@@ -390,6 +436,7 @@ function circleEnd(e){
         type: "Circle",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
@@ -417,6 +464,7 @@ function triangleEnd(e) {
         type: "Triangle",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
@@ -443,6 +491,7 @@ function rectEnd(e) {
         type: "Rect",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
@@ -470,6 +519,7 @@ function starEnd(e){
         type: "Star",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         endPoint: lastPoint
     });
@@ -490,6 +540,7 @@ function drawCurve(beginPoint, controlPoint, endPoint, isReDraw){
         type: "Curve",
         lineWidth: ctx.lineWidth,
         color: currentColor,
+        lineStyle: currentLineStyle,
         beginPoint: beginPoint,
         controlPoint: controlPoint,
         endPoint: endPoint
@@ -690,20 +741,58 @@ function drawStar(beginPoint, endPoint){
 function reDrawCanvas(){
     for(let i = 0; i < canvasAllOps.length; i++){
         let oneOp = canvasAllOps[i];
-        ctx.lineWidth = oneOp.lineWidth;
-        ctx.strokeStyle = oneOp.color.value;
         switch (oneOp.type){
-            case "Curve": drawCurve(oneOp.beginPoint, oneOp.controlPoint, oneOp.endPoint, true); break;
-            case "Line": drawLine(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Circle": drawCircle(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Rect": drawRect(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Triangle": drawTriangle(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Star": drawStar(oneOp.beginPoint, oneOp.endPoint); break;
-            case "Eraser": drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2); break;
+            case "Curve": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawCurve(oneOp.beginPoint, oneOp.controlPoint, oneOp.endPoint, true);
+                break;
+            }
+            case "Line": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawLine(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Circle": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawCircle(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Rect": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawRect(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Triangle": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawTriangle(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Star": {
+                ctx.lineWidth = oneOp.lineWidth;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawStar(oneOp.beginPoint, oneOp.endPoint);
+                break;
+            }
+            case "Eraser": {
+                drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2);
+                break;
+            }
         }
     }
     ctx.lineWidth = currentLineWidth.width;
     ctx.strokeStyle = currentColor.value;
+    ctx.setLineDash(currentLineStyle.dashes);
 }
 
 function getPoint(e){
@@ -733,6 +822,7 @@ window.onload = function (){
     canvasHeight = canvas.height;
     canvasWidth = canvas.width;
     canvas.addEventListener("mousedown", function (e){ // 鼠标按下
+        selectLineTypeBox(true, 0, 0);
         switch (currentToolId) {
             case "pencil":
                 pencilMouseStart(e);
@@ -906,16 +996,14 @@ function selectEraserBox(isHide) {
 
 }
 function selectLineTypeBox(isHide, left, top) {
+    $("#lineTypeSelectBox").css("left",left+"px");
+    $("#lineTypeSelectBox").css("top",top+"px");
     if(isHide){ // 隐藏
         if(!lineTypeBox) return;
-        $("#lineTypeSelectBox").css("left",left+"px");
-        $("#lineTypeSelectBox").css("top",top+"px");
         $("#lineTypeSelectBox").hide();
         lineTypeBox = false;
     }else{ // 显示
         if(lineTypeBox) return;
-        $("#lineTypeSelectBox").css("left",left+"px");
-        $("#lineTypeSelectBox").css("top",top+"px");
         $("#lineTypeSelectBox").show();
         lineTypeBox = true;
         // console.log("show");
