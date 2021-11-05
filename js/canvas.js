@@ -150,11 +150,11 @@ function onClickPen(e){  // "../images/eraser_select.png"
             break;
         }
         case "circle":{
-            selectLineTypeBox(false, 90, 190);
+            selectLineTypeBox(false, 90, 225);
             break;
         }
         case "straightLine":{
-            selectLineTypeBox(false, 90, 225);
+            selectLineTypeBox(false, 90, 190);
             break;
         }
         case "triangle":{

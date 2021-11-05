@@ -13,3 +13,23 @@
     top: 5px;
     z-index: -1;
 }
+.canvasBackFilter{
+    position: absolute;
+    left: 80px;
+    top: 5px;
+    width: 1500px;
+    height: 900px;
+    z-index: -2;
+    background-color: white;
+    opacity: 0.85;
+}
+body{
+    background-image: url("../images/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    background-position: center 0;
+    filter:alpha(opacity=800);
+    -moz-opacity:0.8;
+}

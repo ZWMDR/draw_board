@@ -1,4 +1,12 @@
-
+.backFilter{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #dddddd;
+    opacity: 0.8;
+}
 .penSelectBox{
     height: 140px;
     width: 55px;
@@ -47,7 +55,7 @@
     top: 50px;
     left: 70px;
     padding: 5px;
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
     z-index: 1;
 }
 
