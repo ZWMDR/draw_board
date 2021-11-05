@@ -188,11 +188,16 @@
                 </ul>
             </div>
         </div>
+<!--公式输入部分-->
         <div class="formulaInputBox" id="formulaInputBox">
             <div class="formulaInputBorder" id="formulaInputBorder">
-
+                <span id="formulaInputSpan">普通公式: y=</span>
+                <input class="formulaInput" id="formulaInput" type="text" value="x^2">
+                <button onclick="">绘图</button>
             </div>
         </div>
+
+        <!--画板显示输入部分-->
         <div class="canvasBackFilter" id="canvasBackFilter"></div>
         <canvas class="mainCanvas" id="mainCanvas" width="1500px" height="900px"></canvas>
         <canvas class="subCanvas" id="backCanvas" width="1500px" height="900px"></canvas>

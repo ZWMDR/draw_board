@@ -6,6 +6,7 @@
     height: 100%;
     background-color: #dddddd;
     opacity: 0.8;
+    z-index: -2;
 }
 .penSelectBox{
     height: 140px;
