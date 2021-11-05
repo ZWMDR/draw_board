@@ -559,9 +559,15 @@ function rhomboidFinish(){
         lineStyle: currentLineStyle,
         points: points
     });
-    rhomboidCancel();
+    rhomboidCancel(true, 0);
 }
-function rhomboidCancel(){
+function rhomboidCancel(isFinish, e){
+    // console.log("cancel");
+    if(!isFinish){
+        let currentPoint = getPoint(e);
+        if(currentPoint.x > 0 && currentPoint.x < canvas.width && currentPoint.y > 0 && currentPoint.y < canvas.height)
+            return;
+    }
     points = [];
     drawFlag = false;
     canvas.height = canvas.height;
@@ -1016,7 +1022,7 @@ window.onload = function (){
                 starEnd(e);
                 break;
             case "rhomboid":
-                rhomboidCancel();
+                rhomboidCancel(false, e);
                 break;
         }
         $("#coordinateHintBox").hide();
