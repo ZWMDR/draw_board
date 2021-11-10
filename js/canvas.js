@@ -1028,6 +1028,9 @@ window.onload = function (){
         $("#coordinateHintBox").hide();
         coordCanvas.height = coordCanvas.height;
     }, false);
+    canvas.addEventListener("DOMMouseScroll", function (e){
+        console.log(e);
+    }, false);
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
         canvasAllOps = [];
@@ -1097,6 +1100,7 @@ function selectLineTypeBox(isHide, left, top) {
 $(document).ready(function(){
     selectEraserBox(true);
     $("#lineTypeSelectBox").hide();
+    $("#coordinateHintBox").hide();
 
     $("#eraser").click(function(){
         selectEraserBox(false);
@@ -1122,4 +1126,39 @@ $(document).ready(function(){
     $("#star").click(function(){
         selectEraserBox(true);
     });
+
+    $("#formulaConfirmBtn").click(function (){
+        let formula = $("#formulaInput").val();
+        formula = formula.replace(/\s*/g,"");
+        if(escape(formula).indexOf("%u") >= 0){
+            alert("请勿输入包含中文字符的公式！");
+            return;
+        }
+        if(!escape(formula).indexOf("{") && !escape(formula).indexOf("}")){
+            alert("请使用圆括号代替花括号！");
+            return;
+        }
+        if(!escape(formula).indexOf("[") && !escape(formula).indexOf("]")){
+            alert("请使用圆括号代替方括号！");
+            return;
+        }
+        parseNormalFormula(formula);
+    })
 });
+
+function parseNormalFormula(formula){
+    let regPos = /\d+(\.\d+)?/g; //非负浮点数
+    // let regNeg = /(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))/g; //负浮点数
+    console.log(formula.match(regPos));
+
+
+    // let stack = [];
+    // let iteration1 = [];
+    // for(let i in formula){
+    //     let ch = formula[i];
+    //     if(stack.length === 0) stack.push(ch);
+    //     else if(escape(ch).indexOf("(")) stack.push(ch);
+    //     else if()
+    // }
+}
+

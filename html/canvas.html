@@ -6,6 +6,7 @@
     <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="../js/canvas.js"></script>
     <script type="text/javascript" src="../js/mouse_suspended_prompt.js"></script>
+    <script type="text/javascript" src="../js/execMathExpress.js"></script>
 <!--    <script src='../js/lodash.min.js'></script>-->
 <!--    <script  src="../js/index.js"></script>-->
 <!--    <link rel="stylesheet" type="text/css" href="../css/triangle_background.css">-->
@@ -161,6 +162,7 @@
         <div class="clearCanvasBox" id="clearCanvasBox">
             <button id="clearBtn" class="clearBtn">清除画布</button>
         </div>
+<!--坐标位置-->
         <div class="coordinateHintBox" id="coordinateHintBox">
             <span class="coordinateHintSpan" id="coordinateHintSpan"></span>
         </div>
@@ -193,7 +195,7 @@
             <div class="formulaInputBorder" id="formulaInputBorder">
                 <span id="formulaInputSpan">普通公式: y=</span>
                 <input class="formulaInput" id="formulaInput" type="text" value="x^2">
-                <button onclick="">绘图</button>
+                <button id="formulaConfirmBtn">绘图</button>
             </div>
         </div>
 
