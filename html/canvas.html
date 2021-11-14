@@ -7,26 +7,17 @@
     <script type="text/javascript" src="../js/canvas.js"></script>
     <script type="text/javascript" src="../js/mouse_suspended_prompt.js"></script>
     <script type="text/javascript" src="../js/execMathExpress.js"></script>
-<!--    <script src='../js/lodash.min.js'></script>-->
-<!--    <script  src="../js/index.js"></script>-->
-<!--    <link rel="stylesheet" type="text/css" href="../css/triangle_background.css">-->
+
     <link rel="stylesheet" type="text/css" href="../css/tools_select_box.css">
     <link rel="stylesheet" type="text/css" href="../css/canvas_background.css">
     <link rel="stylesheet" type="text/css" href="../css/canvas.css">
     <link rel="stylesheet" type="text/css" href="../css/coordinateHint.css">
     <link rel="stylesheet" type="text/css" href="../css/formula_input_box.css">
+    <link rel="stylesheet" type="text/css" href="../css/scaling.css">
     <title>几何画板</title>
 </head>
+
 <body>
-<!--    <div class="ui">-->
-<!--        <p class="zoom"><span class="zoom zoomin">+</span><span class="zoom zoomout">-</span></p>-->
-<!--        <p class="zoomlevel"><span class="percent">100</span> % - (<span class="width"></span>px)(<span class="height"></span>px)</p>-->
-<!--        <p>Dead: <span class="dead">0</span></p>-->
-<!--        <p>Alive: <span class="alive">0</span></p>-->
-<!--        <p>Drawn: <span class="drawn">0</span></p>-->
-<!--        <p><span class="fps">0</span> FPS</p>-->
-<!--        <a class="save" href="" download="capture.png">Save</a>-->
-<!--    </div>-->
     <div class="background" id="background">
         <div class="backFilter" id="ackFilter"></div>
         <div class="penSelectBox" id="penSelectBox">
@@ -162,6 +153,36 @@
         <div class="clearCanvasBox" id="clearCanvasBox">
             <button id="clearBtn" class="clearBtn">清除画布</button>
         </div>
+<!--缩放按钮-->
+        <div class="scalingBox" id="scalingBox">
+<!--            <button id="zoomInBtn" class="scalingBtn">放大</button>-->
+<!--            <button id="zoomOutBtn" class="scalingBtn">缩小</button>-->
+            <ul id="scalingXUl" class="scalingUl">
+                <li id="zoomInXTitle" class="scalingTitle">x轴: </li>
+                <li id="zoomInXLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">
+                    <img id="zoomInX" src="../images/zoomIn.png" width="20" height="20">
+                </li>
+                <li id="rateXLi" class="scalingLi">
+                    <span id="rateX" class="rateText">1.00</span>
+                </li>
+                <li id="zoomOutXLi" class="scalingLi" onmouseover="mouseMove(event, '缩小')" onmouseout="mouseMove(event, 0)" target="_blank">
+                    <img id="zoomOutX" src="../images/zoomOut.png" width="20" height="20">
+                </li>
+            </ul>
+            <ul id="scalingYUl" class="scalingUl">
+                <li id="zoomInYTitle" class="scalingTitle">y轴: </li>
+                <li id="zoomInYLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">
+                    <img id="zoomInY" src="../images/zoomIn.png" width="20" height="20">
+                </li>
+                <li id="rateYLi" class="scalingLi">
+                    <span id="rateY" class="rateText">1.00</span>
+                </li>
+                <li id="zoomOutYLi" class="scalingLi" onmouseover="mouseMove(event, '缩小')" onmouseout="mouseMove(event, 0)" target="_blank">
+                    <img id="zoomOutY" src="../images/zoomOut.png" width="20" height="20">
+                </li>
+            </ul>
+    </div>
+
 <!--坐标位置-->
         <div class="coordinateHintBox" id="coordinateHintBox">
             <span class="coordinateHintSpan" id="coordinateHintSpan"></span>
@@ -199,7 +220,7 @@
             </div>
         </div>
 
-        <!--画板显示输入部分-->
+        <!--画板显示部分-->
         <div class="canvasBackFilter" id="canvasBackFilter"></div>
         <canvas class="mainCanvas" id="mainCanvas" width="1500px" height="900px"></canvas>
         <canvas class="subCanvas" id="backCanvas" width="1500px" height="900px"></canvas>

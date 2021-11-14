@@ -1028,15 +1028,53 @@ window.onload = function (){
         $("#coordinateHintBox").hide();
         coordCanvas.height = coordCanvas.height;
     }, false);
-    canvas.addEventListener("DOMMouseScroll", function (e){
-        console.log(e);
-    }, false);
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
         canvasAllOps = [];
         ctx.lineWidth = currentLineWidth.width;
         ctx.strokeStyle = currentColor.value;
     }, false);
+
+    // 缩放按钮组件
+    document.getElementById("zoomInX").addEventListener("mousemove", function (){
+        document.getElementById("zoomInX").src = "../images/zoomIn_select.png";
+    }, false);
+    document.getElementById("zoomInX").addEventListener("mouseleave", function (){
+        document.getElementById("zoomInX").src = "../images/zoomIn.png";
+    }, false);
+    document.getElementById("zoomInX").addEventListener("click", function (){
+
+    }, false);
+    document.getElementById("zoomInY").addEventListener("mousemove", function (){
+        document.getElementById("zoomInY").src = "../images/zoomIn_select.png";
+    }, false);
+    document.getElementById("zoomInY").addEventListener("mouseleave", function (){
+        document.getElementById("zoomInY").src = "../images/zoomIn.png";
+    }, false);
+    document.getElementById("zoomInY").addEventListener("click", function (){
+
+    }, false);
+
+    document.getElementById("zoomOutX").addEventListener("mousemove", function (){
+        document.getElementById("zoomOutX").src = "../images/zoomOut_select.png";
+    }, false);
+    document.getElementById("zoomOutX").addEventListener("mouseleave", function (){
+        document.getElementById("zoomOutX").src = "../images/zoomOut.png";
+    }, false);
+    document.getElementById("zoomOutX").addEventListener("click", function (){
+
+    }, false);
+    document.getElementById("zoomOutY").addEventListener("mousemove", function (){
+        document.getElementById("zoomOutY").src = "../images/zoomOut_select.png";
+    }, false);
+    document.getElementById("zoomOutY").addEventListener("mouseleave", function (){
+        document.getElementById("zoomOutY").src = "../images/zoomOut.png";
+    }, false);
+    document.getElementById("zoomOutY").addEventListener("click", function (){
+
+    }, false);
+    setRateText(scaleRate);
+
     drawCoordinateAxis();
     drawCoordinateScale();
 }
@@ -1127,6 +1165,7 @@ $(document).ready(function(){
         selectEraserBox(true);
     });
 
+
     $("#formulaConfirmBtn").click(function (){
         let formula = $("#formulaInput").val();
         formula = formula.replace(/\s*/g,"");
@@ -1148,9 +1187,17 @@ $(document).ready(function(){
 
 function parseNormalFormula(formula){
     let regPos = /\d+(\.\d+)?/g; //非负浮点数
+    regPos.lastIndex = 0;
     // let regNeg = /(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))/g; //负浮点数
     console.log(formula.match(regPos));
-
+    // let result;
+    // while ((result = regPos.exec(formula)) != null) {
+    //     var str = "str:" + result + ";";
+    //     var fIndex = reg1.firstIndex;
+    //     var lIndex = reg1.lastIndex - result[0].length;
+    //     str = str + "Index:" + (lIndex) + ";";
+    //     console.log(str);
+    // }
 
     // let stack = [];
     // let iteration1 = [];
@@ -1162,3 +1209,10 @@ function parseNormalFormula(formula){
     // }
 }
 
+function setRateText(scaleRate){
+    document.getElementById("rateX").text = scaleRate.x.toFixed(2);
+    document.getElementById("rateY").text = scaleRate.y.toFixed(2);
+}
+function setCanvasScaleRate(){
+
+}

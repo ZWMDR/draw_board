@@ -1,0 +1,44 @@
+.scalingBox{
+    height: 100px;
+    width: 140px;
+    position: absolute;
+    top: 620px;
+    left: 1590px;
+    padding: 5px;
+    text-align: center;
+}
+
+.scalingUl{
+    width: 100%;
+    height: 30px;
+    /*left: 12%;*/
+    list-style-type: none;
+    margin:0 auto;
+    padding:0;
+    text-align: center;
+    /*border:2px solid #999999;*/
+    /*border-radius: 5px;*/
+}
+.scalingTitle{
+    float: left;
+    height: 25px;
+    align-content: center;
+    text-align: center;
+    margin-top: 5px;
+}
+.scalingLi{
+    float: left;
+    height: 20px;
+    align-content: center;
+    text-align: center;
+    margin-top: 5px;
+    padding-left: 10px;
+}
+.rateText{
+    font: italic 14px Times New Roman;
+    font-size: 16px;
+    color: #4d0099;
+    user-select: none;
+    margin-bottom: 2px;
+    /*font-weight: bold;*/
+}
