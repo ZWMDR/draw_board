@@ -1,5 +1,5 @@
-let canvasHeight = 1200;
-let canvasWidth = 800;
+let canvasHeight = 0;
+let canvasWidth = 0;
 const pixelPerUnitLength = 50;
 const spance=20;
 let lastToolId = "pencil";
@@ -18,6 +18,8 @@ let canvasAllOps = [];
 let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
+let canvasCenter = {x: 0, y: 0};
+let canvasOffset = {x: 0, y: 0};
 let currentLineStyle = {id: "solid", dashes: []};
 let lastLineStyle = {id: "solid", dashes: []};
 let lineTypeBox = false;
@@ -88,6 +90,31 @@ function drawCoordinateScale() {
     backCtx.closePath();
     backCtx.setLineDash([]);
 }
+// function writeCoordinateNote() {
+//     backCtx.lineWidth = 1;
+//     backCtx.setLineDash([]);
+//     backCtx.font = "italic 20px Times New Roman";
+//     backCtx.strokeStyle = "#4d0099";
+//     backCtx.textAlign = "center";
+//     backCtx.strokeStyle="#999";
+//     for(let i = canvasWidth/2+pixelPerUnitLength/scaleRate.x; i < canvasWidth-spance; i += pixelPerUnitLength/scaleRate.x){
+//         backCtx.strokeText("x", canvasWidth-spance-10, canvasHeight/2-10);
+//     }
+//     for(let i = canvasWidth/2-pixelPerUnitLength/scaleRate.x; i > spance; i -= pixelPerUnitLength/scaleRate.x){
+//         backCtx.moveTo(i, spance);
+//         backCtx.lineTo(i, canvasHeight-spance);
+//     }
+//     // y坐标
+//     for(let i = canvasHeight/2+pixelPerUnitLength/scaleRate.y; i < canvasHeight-spance; i += pixelPerUnitLength/scaleRate.y){
+//         backCtx.moveTo(spance, i);
+//         backCtx.lineTo(canvasWidth-spance, i);
+//     }
+//     for(let i = canvasHeight/2-pixelPerUnitLength/scaleRate.y; i > spance; i -= pixelPerUnitLength/scaleRate.y){
+//         backCtx.moveTo(spance, i);
+//         backCtx.lineTo(canvasWidth-spance, i);
+//     }
+//
+// }
 // 鼠标显示横纵坐标
 function mouseCoordinateRuler(currentPoint) {
     let xCoord = ((currentPoint.x - canvasWidth/2) / pixelPerUnitLength * scaleRate.x).toFixed(1);
@@ -270,7 +297,7 @@ function pencilDraw(e){  //铅笔
             x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
             y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2
         };
-        drawCurve(beginPoint, controlPoint, endPoint);
+        drawCurve(beginPoint, controlPoint, endPoint, false);
         beginPoint = endPoint;
     }
 }
@@ -283,7 +310,7 @@ function pencilMouseEnd(e){
         const lastTwoPoints = points.slice(-2);
         const controlPoint = lastTwoPoints[0];
         const endPoint = lastTwoPoints[1];
-        drawCurve(beginPoint, controlPoint, endPoint);
+        drawCurve(beginPoint, controlPoint, endPoint, false);
     }
     ctx.lineWidth = currentLineWidth.width;
     beginPoint = null;
@@ -357,6 +384,7 @@ function eraserDraw(e) {
             drawEraser(beginPoint, currentEraserWidth.width/2);
             canvasAllOps.push({
                 type: "Eraser",
+                scaleRate: scaleRate,
                 lineWidth: ctx.lineWidth,
                 beginPoint: beginPoint,
                 eraserWidth: currentEraserWidth
@@ -380,6 +408,7 @@ function eraserEnd(e) {
         ctx.lineWidth = currentLineWidth.width;
         canvasAllOps.push({
             type: "Eraser",
+            scaleRate: scaleRate,
             lineWidth: ctx.lineWidth,
             beginPoint: beginPoint,
             eraserWidth: currentEraserWidth
@@ -407,6 +436,7 @@ function straightLineEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Line",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -434,6 +464,7 @@ function circleEnd(e){
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Circle",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -462,6 +493,7 @@ function triangleEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Triangle",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -489,6 +521,7 @@ function rectEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Rect",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -516,6 +549,7 @@ function starEnd(e){
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Star",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -554,6 +588,7 @@ function rhomboidFinish(){
     drawFlag = false;
     canvasAllOps.push({
         type: "Rhomboid",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -587,6 +622,7 @@ function drawCurve(beginPoint, controlPoint, endPoint, isReDraw){
     if(isReDraw) return;
     canvasAllOps.push({
         type: "Curve",
+        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -815,10 +851,10 @@ function reDrawCanvas(){
         let oneOp = canvasAllOps[i];
         switch (oneOp.type){
             case "Curve": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawCurve(oneOp.beginPoint, oneOp.controlPoint, oneOp.endPoint, true);
+                drawCurve(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.controlPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate), true);
                 break;
             }
             case "Line": {
@@ -878,7 +914,7 @@ function getPoint(e){
     return{
         x: e.clientX - canvas.offsetLeft,
         y: e.clientY - canvas.offsetTop
-    }
+    };
 }
 function canvas2PageCoordinate(currentPoint) {
     return {
@@ -900,6 +936,8 @@ window.onload = function (){
     ctx.lineWidth = currentLineWidth.width;
     canvasHeight = canvas.height;
     canvasWidth = canvas.width;
+    canvasCenter.x = canvasWidth / 2;
+    canvasCenter.y = canvasHeight / 2;
     canvas.addEventListener("mousedown", function (e){ // 鼠标按下
         selectLineTypeBox(true, 0, 0);
         switch (currentToolId) {
@@ -1036,42 +1074,24 @@ window.onload = function (){
     }, false);
 
     // 缩放按钮组件
-    document.getElementById("zoomInX").addEventListener("mousemove", function (){
+    document.getElementById("zoomIn").addEventListener("mousemove", function (){
         document.getElementById("zoomInX").src = "../images/zoomIn_select.png";
     }, false);
-    document.getElementById("zoomInX").addEventListener("mouseleave", function (){
+    document.getElementById("zoomIn").addEventListener("mouseleave", function (){
         document.getElementById("zoomInX").src = "../images/zoomIn.png";
     }, false);
-    document.getElementById("zoomInX").addEventListener("click", function (){
-
-    }, false);
-    document.getElementById("zoomInY").addEventListener("mousemove", function (){
-        document.getElementById("zoomInY").src = "../images/zoomIn_select.png";
-    }, false);
-    document.getElementById("zoomInY").addEventListener("mouseleave", function (){
-        document.getElementById("zoomInY").src = "../images/zoomIn.png";
-    }, false);
-    document.getElementById("zoomInY").addEventListener("click", function (){
-
+    document.getElementById("zoomIn").addEventListener("click", function (){
+        setCanvasScaleRate(true);
     }, false);
 
-    document.getElementById("zoomOutX").addEventListener("mousemove", function (){
+    document.getElementById("zoomOut").addEventListener("mousemove", function (){
         document.getElementById("zoomOutX").src = "../images/zoomOut_select.png";
     }, false);
-    document.getElementById("zoomOutX").addEventListener("mouseleave", function (){
+    document.getElementById("zoomOut").addEventListener("mouseleave", function (){
         document.getElementById("zoomOutX").src = "../images/zoomOut.png";
     }, false);
-    document.getElementById("zoomOutX").addEventListener("click", function (){
-
-    }, false);
-    document.getElementById("zoomOutY").addEventListener("mousemove", function (){
-        document.getElementById("zoomOutY").src = "../images/zoomOut_select.png";
-    }, false);
-    document.getElementById("zoomOutY").addEventListener("mouseleave", function (){
-        document.getElementById("zoomOutY").src = "../images/zoomOut.png";
-    }, false);
-    document.getElementById("zoomOutY").addEventListener("click", function (){
-
+    document.getElementById("zoomOut").addEventListener("click", function (){
+        setCanvasScaleRate(false);
     }, false);
     setRateText(scaleRate);
 
@@ -1210,9 +1230,31 @@ function parseNormalFormula(formula){
 }
 
 function setRateText(scaleRate){
-    document.getElementById("rateX").text = scaleRate.x.toFixed(2);
-    document.getElementById("rateY").text = scaleRate.y.toFixed(2);
+    $("#rateText").text((1/scaleRate.x).toFixed(2));
+    // $("#rateY").text(scaleRate.y.toFixed(2));
 }
-function setCanvasScaleRate(){
+function setCanvasScaleRate(isZoomIn){
+    let lastScaleRate = scaleRate;
+    if(isZoomIn){ //放大
+        if(scaleRate.y > 0.25) {scaleRate.x -= 0.25; scaleRate.y -= 0.25;}
+        else{alert("已达最大缩放比例！");}
+    }else{ // 缩小
+        if(scaleRate.x < 3) {scaleRate.x += 0.25; scaleRate.y += 0.25;}
+        else{alert("已达最小缩放比例！");}
+    }
+    backCanvas.height = backCanvas.height;
+    canvas.height = canvas.height;
 
+    drawCoordinateAxis();
+    drawCoordinateScale();
+    reDrawCanvas();
+
+    setRateText(scaleRate);
+}
+
+function canvasPointConvert(point, scale) {
+    return {
+        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x / scale.x + canvasOffset.x,
+        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y / scale.y + canvasOffset.y
+    };
 }
