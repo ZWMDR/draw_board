@@ -75,15 +75,7 @@ function operatorSplit(mathExpressSplit) {
                 });
             }
         }
-        // else{
-        //
-        // }
     }
-    // for(let i = 0; i < mathExpressSplit.length; i++){
-    //     if(mathExpressSplit[i].type === "operator"){
-    //         if(mathExpressSplit[i].value === "(") mathExpressSplit[i].type = ""
-    //     }
-    // }
     return mathExpressExtracts;
 }
 
@@ -106,16 +98,16 @@ function functionSplit(mathExpressSplit) {
                 if(sptr + 4 < component.value.length) str = component.value.slice(sptr, sptr + 4);
                 else str = component.value.slice(sptr);
 
-                for(let i = 0; i < functionList.length; i++){
-                    index = str.indexOf(functionList[i]);
+                for(let j = 0; j < functionList.length; j++){
+                    index = str.indexOf(functionList[j]);
                     if(index >= 0){
                         flag = true;
                         functions.push({
                             index: index + sptr,
-                            fun: functionList[i]
+                            fun: functionList[j]
                         });
-                        sptr += index + functionList[i].length;
-                        console.log("find", functionList[i]);
+                        sptr += index + functionList[j].length;
+                        console.log("find", functionList[j]);
                         break;
                     }
                 }
@@ -125,82 +117,94 @@ function functionSplit(mathExpressSplit) {
             if(functions.length === 0) mathExpressExtracts.push(component);
             else{
                 let startIndex = 0;
-                for(let i = 0; i < functions.length; i++){
-                    let thisIndex = functions[i].index;
-                    if(thisIndex !== startIndex) {
-                        switch (functions[i].fun) {
-                            case "sin":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.sin(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "cos":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.cos(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "tan":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.tan(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "ln":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.log(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "lg":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.log10(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "log2":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.log2(x);
-                                    }
-                                });
-                                break;
-                            }
-                            case "sqrt":{
-                                mathExpressExtracts.push({
-                                    type: "function",
-                                    value: function (x) {
-                                        return Math.sqrt(x);
-                                    }
-                                });
-                                break;
-                            }
+                for(let j = 0; j < functions.length; j++){
+                    let thisIndex = functions[j].index;
+                    if(thisIndex !== startIndex) mathExpressExtracts.push({
+                        type: "string",
+                        value: component.value.slice(startIndex, thisIndex)
+                    });
+                    switch (functions[j].fun) {
+                        case "sin":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.sin(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "cos":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.cos(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "tan":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.tan(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "ln":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.log(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "lg":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.log10(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "log2":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.log2(x);
+                                }
+                            });
+                            break;
+                        }
+                        case "sqrt":{
+                            mathExpressExtracts.push({
+                                type: "function",
+                                value: function (x) {
+                                    return Math.sqrt(x);
+                                }
+                            });
+                            break;
                         }
                     }
+                    startIndex = thisIndex + functions[j].fun.length;
                 }
+                if(startIndex < component.value.length) mathExpressExtracts.push({
+                    type: "string",
+                    value: component.value.slice(startIndex)
+                });
             }
         }
     }
     return mathExpressExtracts;
 }
 
+// 匹配自变量
+function variableSplit(mathExpressSplit) {
+    let mathExpressExtracts = [];
+
+}
 function expressStackConv(mathExpressStr, digits) {
     let stack = [];
     let outPut = [];
