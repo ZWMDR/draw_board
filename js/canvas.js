@@ -567,7 +567,7 @@ function rhomboidDraw(e) {
     if(points.length > 0) {
         canvas.height = canvas.height;
         reDrawCanvas();
-        reDrawRhomboid(points, true);
+        reDrawRhomboid(points, true, {x: 1, y: 1});
         let currentPoint = getPoint(e);
         drawLine(points[points.length-1], currentPoint);
     }
@@ -830,19 +830,36 @@ function drawStar(beginPoint, endPoint){
     ctx.closePath();
 }
 
-function reDrawRhomboid(points, isDrawing){
+function reDrawRhomboid(points, isDrawing, scale){
     let length = points.length;
-    if(length > 1) {
-        for (let i = 0; i < length - 1; i++) {
-            drawLine(points[i], points[i + 1]);
+    // if(length > 1) {
+    //     for (let i = 0; i < length - 1; i++) {
+    //         drawLine(canvasPointConvert(points[i], scale), canvasPointConvert(points[i+1], scale));
+    //     }
+    // }
+    // if(isDrawing) {
+    //     for (let i = 0; i < length; i++) {
+    //         fillCircle(points[i], currentLineWidth.width / 2 + 2, currentColor.value);
+    //     }
+    // }else {
+    //     drawLine(canvasPointConvert(points[length-1], scale), canvasPointConvert(points[0], scale));
+    // }
+    if(isDrawing){
+        if(length > 1) {
+            for (let i = 0; i < length - 1; i++) {
+                drawLine(points[i], points[i+1]);
+            }
+            for (let i = 0; i < length; i++) {
+                fillCircle(points[i], currentLineWidth.width / 2 + 2, currentColor.value);
+            }
         }
-    }
-    if(isDrawing) {
-        for (let i = 0; i < length; i++) {
-            fillCircle(points[i], currentLineWidth.width / 2 + 2, currentColor.value);
+    }else{ // isReDraw
+        if(length > 1) {
+            for (let i = 0; i < length - 1; i++) {
+                drawLine(canvasPointConvert(points[i], scale), canvasPointConvert(points[i+1], scale));
+            }
+            drawLine(canvasPointConvert(points[length-1], scale), canvasPointConvert(points[0], scale));
         }
-    }else {
-        drawLine(points[length-1], points[0]);
     }
 }
 
@@ -851,52 +868,52 @@ function reDrawCanvas(){
         let oneOp = canvasAllOps[i];
         switch (oneOp.type){
             case "Curve": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x * oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawCurve(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.controlPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate), true);
                 break;
             }
             case "Line": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x * oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawLine(oneOp.beginPoint, oneOp.endPoint);
+                drawLine(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
                 break;
             }
             case "Circle": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawCircle(oneOp.beginPoint, oneOp.endPoint);
+                drawCircle(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
                 break;
             }
             case "Rect": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawRect(oneOp.beginPoint, oneOp.endPoint);
+                drawRect(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
                 break;
             }
             case "Triangle": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawTriangle(oneOp.beginPoint, oneOp.endPoint);
+                drawTriangle(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
                 break;
             }
             case "Star": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawStar(oneOp.beginPoint, oneOp.endPoint);
+                drawStar(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
                 break;
             }
             case "Rhomboid": {
-                ctx.lineWidth = oneOp.lineWidth;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                reDrawRhomboid(oneOp.points, false);
+                reDrawRhomboid(oneOp.points, false, oneOp.scaleRate);
                 break;
             }
             case "Eraser": {
@@ -1206,10 +1223,8 @@ $(document).ready(function(){
 });
 
 function parseNormalFormula(formula){
-    let regPos = /\d+(\.\d+)?/g; //非负浮点数
-    regPos.lastIndex = 0;
-    // let regNeg = /(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))/g; //负浮点数
-    console.log(formula.match(regPos));
+    execMathExpress(formula);
+
     // let result;
     // while ((result = regPos.exec(formula)) != null) {
     //     var str = "str:" + result + ";";
@@ -1251,10 +1266,13 @@ function setCanvasScaleRate(isZoomIn){
 
     setRateText(scaleRate);
 }
-
+function updateCanvasCenter(offSet) {
+    canvasCenter.x = canvasWidth/2 + offSet.x;
+    canvasCenter.y = canvasHeight/2 + offSet.y;
+}
 function canvasPointConvert(point, scale) {
     return {
-        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x / scale.x + canvasOffset.x,
-        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y / scale.y + canvasOffset.y
+        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x * scale.x,
+        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y * scale.y
     };
 }

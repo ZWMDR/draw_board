@@ -1,140 +1,219 @@
-//欧几里得算法 求两个数a、b的最大公约数
-function gcd(a,b){
-    return b===0?a:gcd(b,a%b)
-}
-//分数类 分子，分母
-class Fraction{
-    static create(num,den=1) {
-        if(num instanceof Fraction){
-            return num;
-        }else if(/(-?\d+)\/(\d+)/.test(num)){
-            return new Fraction(parseInt(RegExp.$1),parseInt(RegExp.$2))
-        }else{
-            if(/\.(\d+)/.test(num)){
-                num=num*Math.pow(10,RegExp.$1.length);
-                den=den*Math.pow(10,RegExp.$1.length);
-            }
-            if(/\.(\d+)/.test(den)){
-                num=num*Math.pow(10,RegExp.$1.length);
-                den=den*Math.pow(10,RegExp.$1.length);
-            }
-            return new Fraction(num,den)
-        }
-    }
-    constructor(num=0,den=1){
-        if(den<0){
-            num=-num;
-            den=-den;
-        }
-        if(den===0){
-            throw '分母不能为0'
-        }
-        let g=gcd(Math.abs(num),den)
-        this.num=num/g;
-        this.den=den/g;
-    }
-    //加
-    add(o){
-        return new Fraction(this.num*o.den+this.den*o.num,this.den*o.den)
-    }
-    //减
-    sub(o){
-        return new Fraction(this.num*o.den-this.den*o.num,this.den*o.den)
-    }
-    //乘
-    multiply(o){
-        return new Fraction(this.num*o.num,this.den*o.den);
-    }
-    //除
-    divide(o){
-        return new Fraction(this.num*o.den,this.den*o.num);
-    }
-    //小于
-    lessThan(o){
-        return this.num*o.den<this.den*o.num;
-    }
-    //等于
-    equal(o){
-        return this.num*o.den===this.den*o.num;
-    }
-    toString() {
-        return this.num+'/'+this.den;
-    }
+
+function execMathExpress(mathExpressStr) {
+    let mathExpressStr2Lower = mathExpressStr.toLowerCase();
+    let splitDigit = digitSplit(mathExpressStr2Lower);
+    console.log(splitDigit);
+    let splitOperator = operatorSplit(splitDigit);
+    console.log(splitOperator);
+    let splitFun = functionSplit(splitOperator);
+    console.log(splitFun);
 }
 
-//解析数学表达式
-function execMathExpress(formula,obj){
-    //局部变量
-    const tempObj=Object.assign({
-        _0:0
-    },obj);
-    //计算缓存
-    const keyCache={};
-    let index=1;
-
-    formula=formula.replace(/ /g,'');//清理空格
-    //解析数字
-    formula=formula.replace(/(^|[(*+/-])(\d+\.\d+|\d+)/g,function (m,p1,p2) {
-        if(keyCache[p2]){
-            return p1+keyCache[p2];
-        }
-        const key=keyCache[p2]='_'+index++;
-        tempObj[key]=Fraction.create(p2);
-        return p1+key;
-    })
-
-    function getKey(p1,p2,p3) {
-        const keyC=p1+p2+p3;
-        if(keyCache[keyC]){
-            return keyCache[keyC];
-        }
-        const key=keyCache[keyC]='_'+index++;
-        const fA=Fraction.create(tempObj[p1])
-        const fB=Fraction.create(tempObj[p3])
-        if(p2==='*'){
-            tempObj[key]=fA.multiply(fB);
-        }else if(p2==='/'){
-            tempObj[key]=fA.divide(fB);
-        }else if(p2==='+'){
-            tempObj[key]=fA.add(fB);
-        }else if(p2==='-'){
-            tempObj[key]=fA.sub(fB);
-        }
-        return key;
+// 正则匹配从字符串中提取出数字
+function digitSplit(mathExpressStr){
+    let regDigit = /\d+(\.\d+)?/g; //非负浮点数
+    // let regNeg = /(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))/g; //负浮点数
+    regDigit.lastIndex = 0;
+    let digits = mathExpressStr.match(regDigit);
+    let mathExpressExtracts = [];
+    let startIndex = 0;
+    if(digits == null) {
+        mathExpressExtracts.push({
+            type: "string",
+            value: mathExpressStr
+        });
+        return mathExpressExtracts;
     }
-    function run(s) {
 
-        //子表达式
-        if(/\(([^\(]+?)\)/.test(s)){
-            s=s.replace(/\(([^\(]+?)\)/g,function (m,p1,p2) {
-                return run(p1);
-            })
-        }
-        //负号
-        s=s.replace(/([*/+]|^)-(\w+)/g,function (m,p1,p2) {
-            return getKey('_0','-',p2);
-        })
-        //返回
-        if(/(^\w+$)/.test(s)){
-            return RegExp.$1;
-        }
-        //乘法、除法、加法、减法
-        const expArr=['*','/','+','-'];
-        for(let i=0;i<expArr.length;i++){
-            const p=expArr[i];
-            const reg=new RegExp('(\\w+)['+p+'](\\w+)');
-            while (reg.test(s)){
-                s=s.replace(reg,function (m,p1,p2) {
-                    return getKey(p1,p,p2);
-                })
+    for(let i = 0; i < digits.length; i++){
+        let thisIndex = mathExpressStr.slice(startIndex).indexOf(digits[i]) + startIndex;
+        if(thisIndex !== startIndex) mathExpressExtracts.push({
+            type: "string",
+            value: mathExpressStr.slice(startIndex, thisIndex)
+        });
+        mathExpressExtracts.push({
+            type: "number",
+            value: Number(digits[i])
+        });
+        startIndex = thisIndex + digits[i].length;
+    }
+    if(startIndex < mathExpressStr.length) mathExpressExtracts.push({
+        type: "string",
+        value: mathExpressStr.slice(startIndex)
+    });
+    return mathExpressExtracts;
+}
+
+// 正则匹配从字符串中提取出运算符
+function operatorSplit(mathExpressSplit) {
+    let mathExpressExtracts = [];
+    for(let i = 0; i < mathExpressSplit.length; i++){
+        let component = mathExpressSplit[i];
+        if(component.type === "number") mathExpressExtracts.push(component);
+        else if(component.type === "string"){
+            let str = component.value;
+            let regOp = /[()^*/+-]/g;  // 正则匹配四则运算符号
+            let opSplit = str.match(regOp);
+            if(opSplit == null) mathExpressExtracts.push(component);
+            else{
+                let startIndex = 0;
+                for(let i = 0; i < opSplit.length; i++){
+                    let thisIndex = str.slice(startIndex).indexOf(opSplit[i]) + startIndex;
+                    if(thisIndex !== startIndex) mathExpressExtracts.push({
+                        type: "string",
+                        value: str.slice(startIndex, thisIndex)
+                    });
+                    mathExpressExtracts.push({
+                        type: "operator",
+                        value: opSplit[i]
+                    });
+                    startIndex = thisIndex + 1;
+                }
+                if(startIndex < str.length) mathExpressExtracts.push({
+                    type: "string",
+                    value: str.slice(startIndex)
+                });
             }
         }
-        //返回
-        if(/(^\w+$)/.test(s)){
-            return RegExp.$1;
-        }
-        return run(s);
+        // else{
+        //
+        // }
     }
-    return tempObj[run(formula)]
+    // for(let i = 0; i < mathExpressSplit.length; i++){
+    //     if(mathExpressSplit[i].type === "operator"){
+    //         if(mathExpressSplit[i].value === "(") mathExpressSplit[i].type = ""
+    //     }
+    // }
+    return mathExpressExtracts;
 }
-// module.exports=execMathExpress;
+
+// 匹配特殊函数
+function functionSplit(mathExpressSplit) {
+    const functionList = ["sin", "cos", "tan", "ln", "lg", "log2", "sqrt"];
+    let mathExpressExtracts = [];
+    for(let i = 0; i < mathExpressSplit.length; i++) {
+        let component = mathExpressSplit[i];
+        if (component.type === "number") mathExpressExtracts.push(component);
+        else if (component.type === "operator") mathExpressExtracts.push(component);
+        else if(component.type === "string"){
+            let functions = [];
+            let sptr = 0;
+
+            while(sptr < component.value.length){
+                let index = 0;
+                let flag = false;
+                let str = "";
+                if(sptr + 4 < component.value.length) str = component.value.slice(sptr, sptr + 4);
+                else str = component.value.slice(sptr);
+
+                for(let i = 0; i < functionList.length; i++){
+                    index = str.indexOf(functionList[i]);
+                    if(index >= 0){
+                        flag = true;
+                        functions.push({
+                            index: index + sptr,
+                            fun: functionList[i]
+                        });
+                        sptr += index + functionList[i].length;
+                        console.log("find", functionList[i]);
+                        break;
+                    }
+                }
+                if(!flag) sptr += 1;
+            }
+            console.log(functions);
+            if(functions.length === 0) mathExpressExtracts.push(component);
+            else{
+                let startIndex = 0;
+                for(let i = 0; i < functions.length; i++){
+                    let thisIndex = functions[i].index;
+                    if(thisIndex !== startIndex) {
+                        switch (functions[i].fun) {
+                            case "sin":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.sin(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "cos":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.cos(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "tan":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.tan(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "ln":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.log(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "lg":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.log10(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "log2":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.log2(x);
+                                    }
+                                });
+                                break;
+                            }
+                            case "sqrt":{
+                                mathExpressExtracts.push({
+                                    type: "function",
+                                    value: function (x) {
+                                        return Math.sqrt(x);
+                                    }
+                                });
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return mathExpressExtracts;
+}
+
+function expressStackConv(mathExpressStr, digits) {
+    let stack = [];
+    let outPut = [];
+    const prioritys = {
+        ")": 0,
+        "(": 1,
+        "^": 2,
+        "*": 3,
+        "/": 3,
+        "+": 4,
+        "-": 4
+    }
+    for(let digit in digits){
+
+    }
+}
