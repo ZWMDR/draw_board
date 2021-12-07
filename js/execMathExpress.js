@@ -2,11 +2,14 @@
 function execMathExpress(mathExpressStr) {
     let mathExpressStr2Lower = mathExpressStr.toLowerCase();
     let splitDigit = digitSplit(mathExpressStr2Lower);
-    console.log(splitDigit);
+    // console.log(splitDigit);
     let splitOperator = operatorSplit(splitDigit);
-    console.log(splitOperator);
+    // console.log(splitOperator);
     let splitFun = functionSplit(splitOperator);
-    console.log(splitFun);
+    // console.log(splitFun);
+    let splitVariable = variableSplit(splitFun);
+    // console.log(splitVariable);
+    return splitVariable;
 }
 
 // 正则匹配从字符串中提取出数字
@@ -81,7 +84,7 @@ function operatorSplit(mathExpressSplit) {
 
 // 匹配特殊函数
 function functionSplit(mathExpressSplit) {
-    const functionList = ["sin", "cos", "tan", "ln", "lg", "log2", "sqrt"];
+    const functionList = ["sin", "cos", "tan", "ln", "lg", "log", "sqrt"];
     let mathExpressExtracts = [];
     for(let i = 0; i < mathExpressSplit.length; i++) {
         let component = mathExpressSplit[i];
@@ -91,6 +94,7 @@ function functionSplit(mathExpressSplit) {
             let functions = [];
             let sptr = 0;
 
+            // 迭代找到所有特殊函数，保存在数组functions中
             while(sptr < component.value.length){
                 let index = 0;
                 let flag = false;
@@ -113,7 +117,8 @@ function functionSplit(mathExpressSplit) {
                 }
                 if(!flag) sptr += 1;
             }
-            console.log(functions);
+
+            // 遍历functions中的所有函数，从string中分割
             if(functions.length === 0) mathExpressExtracts.push(component);
             else{
                 let startIndex = 0;
@@ -169,7 +174,7 @@ function functionSplit(mathExpressSplit) {
                             });
                             break;
                         }
-                        case "log2":{
+                        case "log":{
                             mathExpressExtracts.push({
                                 type: "function",
                                 value: function (x) {
@@ -203,8 +208,38 @@ function functionSplit(mathExpressSplit) {
 // 匹配自变量
 function variableSplit(mathExpressSplit) {
     let mathExpressExtracts = [];
-
+    for(let i = 0; i < mathExpressSplit.length; i++) {
+        let component = mathExpressSplit[i];
+        if(component.type === "string"){
+            let str = component.value;
+            let regOp = /x/g;  // 正则匹配四则运算符号
+            let opSplit = str.match(regOp);
+            if(opSplit == null) mathExpressExtracts.push(component);
+            else{
+                let startIndex = 0;
+                for(let i = 0; i < opSplit.length; i++){
+                    let thisIndex = str.slice(startIndex).indexOf(opSplit[i]) + startIndex;
+                    if(thisIndex !== startIndex) mathExpressExtracts.push({
+                        type: "string",
+                        value: str.slice(startIndex, thisIndex)
+                    });
+                    mathExpressExtracts.push({
+                        type: "variable",
+                        value: "x"
+                    });
+                    startIndex = thisIndex + 1;
+                }
+                if(startIndex < str.length) mathExpressExtracts.push({
+                    type: "string",
+                    value: str.slice(startIndex)
+                });
+            }
+        }
+        else mathExpressExtracts.push(component);
+    }
+    return mathExpressExtracts;
 }
+
 function expressStackConv(mathExpressStr, digits) {
     let stack = [];
     let outPut = [];

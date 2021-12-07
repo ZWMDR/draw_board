@@ -1223,7 +1223,7 @@ $(document).ready(function(){
 });
 
 function parseNormalFormula(formula){
-    execMathExpress(formula);
+    let formulaSplit = execMathExpress(formula);
 
     // let result;
     // while ((result = regPos.exec(formula)) != null) {
