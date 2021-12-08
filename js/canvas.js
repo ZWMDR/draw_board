@@ -939,6 +939,13 @@ function canvas2PageCoordinate(currentPoint) {
         y: currentPoint.y + canvas.offsetTop
     };
 }
+function axis2PageCoordinate(axisPoint) {
+    return{
+        x: canvasCenter.x + axisPoint.x * scaleRate.x * pixelPerUnitLength,
+        y: canvasCenter.y - axisPoint.y * scaleRate.y * pixelPerUnitLength
+    };
+
+}
 function getDistance(pointA, pointB) {
     return Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
 }
@@ -1224,24 +1231,24 @@ $(document).ready(function(){
 
 function parseNormalFormula(formula){
     let formulaSplit = execMathExpress(formula);
+    if(checkFormulaCharacter(formulaSplit)){
+        let expressStr = evalMathExpress(formulaSplit).join("");
+        console.log(expressStr);
+        drawFormula(expressStr, -10, 10, 0.02);
+    }
+    else alert("输入公式存在不可解析的字符或不支持的初等函数，请检查拼写格式！");
+}
 
-    // let result;
-    // while ((result = regPos.exec(formula)) != null) {
-    //     var str = "str:" + result + ";";
-    //     var fIndex = reg1.firstIndex;
-    //     var lIndex = reg1.lastIndex - result[0].length;
-    //     str = str + "Index:" + (lIndex) + ";";
-    //     console.log(str);
-    // }
-
-    // let stack = [];
-    // let iteration1 = [];
-    // for(let i in formula){
-    //     let ch = formula[i];
-    //     if(stack.length === 0) stack.push(ch);
-    //     else if(escape(ch).indexOf("(")) stack.push(ch);
-    //     else if()
-    // }
+function drawFormula(expressStr, startX, endX, sep) {
+    let x = startX;
+    let startPoint = {x: x, y: eval(expressStr)};
+    let axisPoint = startPoint;
+    for(x = startX+sep; x < endX; x+=sep) {
+        axisPoint = {x: x, y: eval(expressStr)};
+        drawLine(axis2PageCoordinate(startPoint), axis2PageCoordinate(axisPoint));
+        startPoint = axisPoint;
+    }
+    drawLine(axis2PageCoordinate(axisPoint), axis2PageCoordinate({x: endX, y: eval(expressStr)}));
 }
 
 function setRateText(scaleRate){
