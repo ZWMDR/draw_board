@@ -89,6 +89,9 @@ function evalMathExpress(mathExpressSplit) {
             expressToAdd.push("Math.pow(" + last + ",");
             addParentheses = true;
         }
+        else if(mathExpressSplit[i].type === "variable" && i < mathExpressSplit.length -1){
+            if(mathExpressSplit[i+1].type === "function") expressToAdd.push("*");
+        }
     }
     return expressToAdd;
 }

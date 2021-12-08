@@ -920,6 +920,13 @@ function reDrawCanvas(){
                 drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2);
                 break;
             }
+            case "function":{
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.strokeStyle = oneOp.color.value;
+                ctx.setLineDash(oneOp.lineStyle.dashes);
+                drawFormula(oneOp.expressStr, oneOp.startX, oneOp.endX, oneOp.sep);
+                break;
+            }
         }
     }
     ctx.lineWidth = currentLineWidth.width;
@@ -1212,6 +1219,8 @@ $(document).ready(function(){
 
     $("#formulaConfirmBtn").click(function (){
         let formula = $("#formulaInput").val();
+        let startX = $("#startXInput").val();
+        let endX = $("#endXInput").val();
         formula = formula.replace(/\s*/g,"");
         if(escape(formula).indexOf("%u") >= 0){
             alert("请勿输入包含中文字符的公式！");
@@ -1225,16 +1234,32 @@ $(document).ready(function(){
             alert("请使用圆括号代替方括号！");
             return;
         }
-        parseNormalFormula(formula);
+        try{
+            startX = Number(startX);
+            endX = Number(endX);
+        }catch (e){
+            alert("x轴范围请勿输入字符！");
+        }
+        parseNormalFormula(formula, startX, endX, 0.02);
     })
 });
 
-function parseNormalFormula(formula){
+function parseNormalFormula(formula = "sin(x)+cos(x)", startX = -10, endX = 10, sep = 0.02){
     let formulaSplit = execMathExpress(formula);
     if(checkFormulaCharacter(formulaSplit)){
         let expressStr = evalMathExpress(formulaSplit).join("");
-        console.log(expressStr);
-        drawFormula(expressStr, -10, 10, 0.02);
+        drawFormula(expressStr, startX, endX, sep);
+        canvasAllOps.push({
+            type: "function",
+            scaleRate: scaleRate,
+            lineWidth: ctx.lineWidth,
+            color: currentColor,
+            lineStyle: currentLineStyle,
+            expressStr: expressStr,
+            startX: startX,
+            endX: endX,
+            sep: sep
+        });
     }
     else alert("输入公式存在不可解析的字符或不支持的初等函数，请检查拼写格式！");
 }
