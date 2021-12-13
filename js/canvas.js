@@ -376,7 +376,7 @@ function eraserDraw(e) {
                 canvasAllOps.push({
                     type: "Eraser",
                     lineWidth: ctx.lineWidth,
-                    beginPoint: startPoint,
+                    beginPoint: canvasPoint2BasePoint(startPoint),
                     eraserWidth: currentEraserWidth
                 });
             }
@@ -386,7 +386,7 @@ function eraserDraw(e) {
                 type: "Eraser",
                 scaleRate: scaleRate,
                 lineWidth: ctx.lineWidth,
-                beginPoint: beginPoint,
+                beginPoint: canvasPoint2BasePoint(beginPoint),
                 eraserWidth: currentEraserWidth
             });
         }
@@ -410,8 +410,8 @@ function eraserEnd(e) {
             type: "Eraser",
             scaleRate: scaleRate,
             lineWidth: ctx.lineWidth,
-            beginPoint: beginPoint,
-            eraserWidth: currentEraserWidth
+            beginPoint: canvasPoint2BasePoint(beginPoint),
+            eraserWidth: canvasPoint2BasePoint(currentEraserWidth)
         });
     }
     ctx.setLineDash(currentLineStyle.dashes);
@@ -440,8 +440,8 @@ function straightLineEnd(e) {
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        endPoint: lastPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        endPoint: canvasPoint2BasePoint(lastPoint)
     });
 }
 
@@ -468,8 +468,8 @@ function circleEnd(e){
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        endPoint: lastPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        endPoint: canvasPoint2BasePoint(lastPoint)
     });
 }
 
@@ -496,8 +496,8 @@ function triangleEnd(e) {
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        endPoint: lastPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        endPoint: canvasPoint2BasePoint(lastPoint)
     });
 }
 
@@ -524,8 +524,8 @@ function rectEnd(e) {
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        endPoint: lastPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        endPoint: canvasPoint2BasePoint(lastPoint)
     });
 }
 
@@ -552,8 +552,8 @@ function starEnd(e){
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        endPoint: lastPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        endPoint: canvasPoint2BasePoint(lastPoint)
     });
 }
 
@@ -585,9 +585,11 @@ function rhomboidEnd(e){
 }
 function rhomboidFinish(){
     drawFlag = false;
+    for(let i = 0; i < points.length; i++)
+        points[i] = canvasPoint2BasePoint(points[i]);
+
     canvasAllOps.push({
         type: "Rhomboid",
-        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -621,13 +623,12 @@ function drawCurve(beginPoint, controlPoint, endPoint, isReDraw){
     if(isReDraw) return;
     canvasAllOps.push({
         type: "Curve",
-        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
-        beginPoint: beginPoint,
-        controlPoint: controlPoint,
-        endPoint: endPoint
+        beginPoint: canvasPoint2BasePoint(beginPoint),
+        controlPoint: canvasPoint2BasePoint(controlPoint),
+        endPoint: canvasPoint2BasePoint(endPoint)
     });
 }
 function drawLine(beginPoint, endPoint){
@@ -835,7 +836,7 @@ function drawStar(beginPoint, endPoint){
     ctx.closePath();
 }
 
-function reDrawRhomboid(points, isDrawing, scale){
+function reDrawRhomboid(points, isDrawing){
     let length = points.length;
     // if(length > 1) {
     //     for (let i = 0; i < length - 1; i++) {
@@ -861,10 +862,10 @@ function reDrawRhomboid(points, isDrawing, scale){
     }else{ // isReDraw
         if(length > 1) {
             for (let i = 0; i < length - 1; i++) {
-                drawLine(canvasPointConvert(points[i], scale), canvasPointConvert(points[i+1], scale));
+                drawLine(canvasPointConvert(points[i]), canvasPointConvert(points[i+1]));
                 fillCircle(points[i], currentLineWidth.width/2, currentColor.value);
             }
-            drawLine(canvasPointConvert(points[length-1], scale), canvasPointConvert(points[0], scale));
+            drawLine(canvasPointConvert(points[length-1]), canvasPointConvert(points[0]));
         }
     }
 }
@@ -874,52 +875,52 @@ function reDrawCanvas(){
         let oneOp = canvasAllOps[i];
         switch (oneOp.type){
             case "Curve": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawCurve(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.controlPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate), true);
+                drawCurve(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.controlPoint), canvasPointConvert(oneOp.endPoint), true);
                 break;
             }
             case "Line": {
                 ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawLine(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
+                drawLine(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Circle": {
                 ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawCircle(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
+                drawCircle(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Rect": {
                 ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawRect(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
+                drawRect(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Triangle": {
                 ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawTriangle(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
+                drawTriangle(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Star": {
                 ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                drawStar(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
+                drawStar(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Rhomboid": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
-                reDrawRhomboid(oneOp.points, false, oneOp.scaleRate);
+                reDrawRhomboid(oneOp.points, false);
                 break;
             }
             case "Eraser": {
@@ -927,7 +928,7 @@ function reDrawCanvas(){
                 break;
             }
             case "function":{
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawFormula(oneOp.expressStr, oneOp.startX, oneOp.endX, oneOp.sep);
@@ -1112,20 +1113,20 @@ window.onload = function (){
 
     // 缩放按钮组件
     document.getElementById("zoomIn").addEventListener("mousemove", function (){
-        document.getElementById("zoomInX").src = "../images/zoomIn_select.png";
+        document.getElementById("zoomIn").src = "../images/zoomIn_select.png";
     }, false);
     document.getElementById("zoomIn").addEventListener("mouseleave", function (){
-        document.getElementById("zoomInX").src = "../images/zoomIn.png";
+        document.getElementById("zoomIn").src = "../images/zoomIn.png";
     }, false);
     document.getElementById("zoomIn").addEventListener("click", function (){
         setCanvasScaleRate(true);
     }, false);
 
     document.getElementById("zoomOut").addEventListener("mousemove", function (){
-        document.getElementById("zoomOutX").src = "../images/zoomOut_select.png";
+        document.getElementById("zoomOut").src = "../images/zoomOut_select.png";
     }, false);
     document.getElementById("zoomOut").addEventListener("mouseleave", function (){
-        document.getElementById("zoomOutX").src = "../images/zoomOut.png";
+        document.getElementById("zoomOut").src = "../images/zoomOut.png";
     }, false);
     document.getElementById("zoomOut").addEventListener("click", function (){
         setCanvasScaleRate(false);
@@ -1307,9 +1308,15 @@ function updateCanvasCenter(offSet) {
     canvasCenter.x = canvasWidth/2 + offSet.x;
     canvasCenter.y = canvasHeight/2 + offSet.y;
 }
-function canvasPointConvert(point, scale) {
+function canvasPointConvert(point) {
     return {
-        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x / scale.x,
-        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y / scale.y
+        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x,
+        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y
     };
+}
+function canvasPoint2BasePoint(point) {
+    return{
+        x: canvasCenter.x + (point.x - canvasCenter.x) * scaleRate.x,
+        y: canvasCenter.y + (point.y - canvasCenter.y) * scaleRate.y
+    }
 }
