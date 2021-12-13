@@ -1254,18 +1254,24 @@ function parseNormalFormula(formula = "sin(x)+cos(x)", startX = -10, endX = 10, 
     let formulaSplit = execMathExpress(formula);
     if(checkFormulaCharacter(formulaSplit)){
         let expressStr = evalMathExpress(formulaSplit).join("");
-        drawFormula(expressStr, startX, endX, sep);
-        canvasAllOps.push({
-            type: "function",
-            scaleRate: scaleRate,
-            lineWidth: ctx.lineWidth,
-            color: currentColor,
-            lineStyle: currentLineStyle,
-            expressStr: expressStr,
-            startX: startX,
-            endX: endX,
-            sep: sep
-        });
+        try {
+            drawFormula(expressStr, startX, endX, sep);
+            canvasAllOps.push({
+                type: "function",
+                scaleRate: scaleRate,
+                lineWidth: ctx.lineWidth,
+                color: currentColor,
+                lineStyle: currentLineStyle,
+                expressStr: expressStr,
+                startX: startX,
+                endX: endX,
+                sep: sep
+            });
+        }
+        catch (e) {
+            console.log(e);
+            alert("输入公式存在格式错误，请检查拼写!");
+        }
     }
     else alert("输入公式存在不可解析的字符或不支持的初等函数，请检查拼写格式！");
 }
