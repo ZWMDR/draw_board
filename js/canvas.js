@@ -1301,7 +1301,7 @@ $(document).ready(function(){
             startX = Number(startX);
             endX = Number(endX);
         }catch (e){
-            alert("x轴范围处请勿输入其它字符！");
+            alert("x轴绘图范围处请勿输入其它字符！");
         }
         parseNormalFormula(formula, startX, endX, 0.02);
     })
