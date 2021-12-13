@@ -19,7 +19,7 @@ let currentColor = {id:"black", value: "#000000"};
 let lastColor = {id:"black", value: "#000000"};
 let scaleRate = {x: 1, y: 1};
 let canvasCenter = {x: 0, y: 0};
-let canvasOffset = {x: 0, y: 0};
+let lastCanvasCenter = {x: 0, y: 0};
 let currentLineStyle = {id: "solid", dashes: []};
 let lastLineStyle = {id: "solid", dashes: []};
 let lineTypeBox = false;
@@ -157,6 +157,28 @@ function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜�
     document.getElementById(currentID).src = "../images/" + currentID + "_select.png";
 }
 
+function canvasMoveStart(e){
+    beginPoint = getPoint(e);
+    drawFlag = true;
+}
+function canvasMove(e){
+    if(!drawFlag) return;
+    lastPoint = getPoint(e);
+    let offset = {x: lastPoint.x - beginPoint.x, y: lastPoint.y - beginPoint.y};
+    updateCanvasCenter(offset);
+    canvas.height = canvas.height;
+    reDrawCanvas();
+}
+function canvasMoveEnd(e){
+    // lastPoint = getPoint(e);
+    // let offset = {x: lastPoint.x - beginPoint.x, y: lastPoint.y - beginPoint.y};
+    // updateCanvasCenter(offset);
+    lastCanvasCenter = canvasCenter;
+    canvas.height = canvas.height;
+    reDrawCanvas();
+    drawFlag = false;
+}
+
 function onClickPen(e){  // "../images/eraser_select.png"
     canvas.height = canvas.height;
     reDrawCanvas();
@@ -164,6 +186,9 @@ function onClickPen(e){  // "../images/eraser_select.png"
     setSelectImg(lastToolId, currentToolId);
     lastToolId = currentToolId;
     switch (currentToolId) {
+        case "move":{
+            break;
+        }
         case "pencil":{
             selectLineTypeBox(false, 90, 150);
             break;
@@ -976,9 +1001,13 @@ window.onload = function (){
     canvasWidth = canvas.width;
     canvasCenter.x = canvasWidth / 2;
     canvasCenter.y = canvasHeight / 2;
+    lastCanvasCenter = canvasCenter;
     canvas.addEventListener("mousedown", function (e){ // 鼠标按下
         selectLineTypeBox(true, 0, 0);
         switch (currentToolId) {
+            case "move":
+                canvasMoveStart(e);
+                break;
             case "pencil":
                 pencilMouseStart(e);
                 break; //铅笔
@@ -1010,6 +1039,9 @@ window.onload = function (){
     }, false);
     canvas.addEventListener("mousemove", function (e) { // 鼠标移动
         switch (currentToolId) {
+            case "move":
+                canvasMove(e);
+                break;
             case "pencil":
                 pencilDraw(e);
                 break;
@@ -1042,6 +1074,9 @@ window.onload = function (){
     }, false);
     canvas.addEventListener("mouseup", function (e){ // 鼠标抬起
         switch (currentToolId) {
+            case "move":
+                canvasMoveEnd(e);
+                break;
             case "pencil":
                 pencilMouseEnd(e);
                 break;
@@ -1073,6 +1108,9 @@ window.onload = function (){
     }, false);
     canvas.addEventListener("mouseleave", function (e){ // 鼠标离开画布
         switch (currentToolId){
+            case "move":
+                canvasMoveEnd(e);
+                break;
             case "pencil":
                 pencilMouseEnd(e);
                 break;
@@ -1104,12 +1142,31 @@ window.onload = function (){
         $("#coordinateHintBox").hide();
         coordCanvas.height = coordCanvas.height;
     }, false);
+    // 全屏清除
     document.getElementById("clearBtn").addEventListener("click", function (){
         canvas.height = canvas.height;
         canvasAllOps = [];
         ctx.lineWidth = currentLineWidth.width;
         ctx.strokeStyle = currentColor.value;
+        resetCanvasCenter();
     }, false);
+
+    // 保存图片
+    document.getElementById("saveBtn").addEventListener("click", function () {
+        let imgData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        var savaFile=function(data,filename)
+        {
+            let save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+            save_link.href = data;
+            save_link.download = filename;
+            let event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click',true,false,window,0,0,0,0,0,false,false,false,false,0,null);
+            save_link.dispatchEvent(event);
+        };
+        let fileName='drawing_board.png';
+        //注意咯 由于图片下载的比较少 就直接用当前几号做的图片名字
+        savaFile(imgData,fileName);
+    },false);
 
     // 缩放按钮组件
     document.getElementById("zoomIn").addEventListener("mousemove", function (){
@@ -1311,8 +1368,14 @@ function setCanvasScaleRate(isZoomIn){
     setRateText(scaleRate);
 }
 function updateCanvasCenter(offSet) {
-    canvasCenter.x = canvasWidth/2 + offSet.x;
-    canvasCenter.y = canvasHeight/2 + offSet.y;
+    canvasCenter.x = canvasWidth / 2 + offSet.x;
+    canvasCenter.y = canvasHeight / 2 + offSet.y;
+    // console.log(lastCanvasCenter);
+}
+function resetCanvasCenter(){
+    canvasCenter.x = canvasWidth / 2;
+    canvasCenter.y = canvasHeight / 2;
+    lastCanvasCenter = canvasCenter;
 }
 function canvasPointConvert(point) {
     return {

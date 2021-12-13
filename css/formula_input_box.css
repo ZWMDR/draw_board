@@ -1,10 +1,11 @@
 .formulaInputBox{
-    height: 600px;
+    height: 220px;
     width: 300px;
     position: absolute;
     top: 0;
     left: 1590px;
     padding: 5px;
+    text-align: center;
 }
 
 .formulaInputBorder{
@@ -14,4 +15,108 @@
     border-radius: 5px;
     padding: 5px;
     position:relative;
+}
+
+.formulaTitle{
+    font: bold 20px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+    text-align: center;
+}
+.formulaDivH1{
+    width: 100%;
+    height: 3px;
+    background-color: #999999;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.formulaDivH2{
+    width: 100%;
+    height: 2px;
+    background-color: #999999;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.formulaSpan{
+    font: bold 14px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+    text-align: center;
+}
+
+.formulaInput{
+    font: bold 14px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4f4f4f;
+    opacity: 75%;
+    width: 260px;
+    height: 20px;
+    border: 1px solid #ccc;
+    padding: 7px 0px;
+    border-radius: 3px;
+    padding-left:5px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+}
+.formulaInput:focus{
+    border-color: #4d0099;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+
+.axisInput{
+    font: bold 14px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4f4f4f;
+    opacity: 75%;
+    width: 50px;
+    height: 16px;
+    border: 1px solid #ccc;
+    padding: 7px 0px;
+    border-radius: 3px;
+    padding-left:5px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+}
+.axisInput:focus{
+    border-color: #4d0099;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+
+.formulaConfirmBtn{
+    width: 70px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    text-shadow:1px 1px 1px #333;
+    border-radius: 5px;
+    margin:0 5px 5px 0;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+
+    border:1px solid #1e7db9;
+    box-shadow: 0 1px 2px #8fcaee inset,0 -1px 0 #497897 inset,0 -2px 3px #8fcaee inset;
+    background: -webkit-linear-gradient(top,#42a4e0,#2e88c0);
+    background: -moz-linear-gradient(top,#42a4e0,#2e88c0);
+    background: linear-gradient(top,#42a4e0,#2e88c0);
+}
+.formulaConfirmBtn:hover{
+    background: -webkit-linear-gradient(top,#70bfef,#4097ce);
+    background: -moz-linear-gradient(top,#70bfef,#4097ce);
+    background: linear-gradient(top,#70bfef,#4097ce);
+}
+.formulaConfirmBtn:active{
+    top:1px;
+    box-shadow: 0 1px 3px #114566 inset,0 3px 0 #fff;
+    background: -webkit-linear-gradient(top,#1a71a8,#1976b1);
+    background: -moz-linear-gradient(top,#1a71a8,#1976b1);
+    background: linear-gradient(top,#1a71a8,#1976b1);
 }
