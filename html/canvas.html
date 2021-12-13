@@ -23,14 +23,11 @@
         <div class="penSelectBox" id="penSelectBox">
             <div class="toolsSelectBorder" id="penSelectBorder">
                 <div class="toolsSelectTitle" id="penSelectTitle">
-                    <span class="toolsSelectTitleText">画笔</span>
+                    <span class="toolsSelectTitleText">功能</span>
                 </div>
                 <ul class="toolsSelectUl" id="penSelectUl">
-                    <li class="toolsSelectLi" id="pencilLi" onmouseover="mouseMove(event, '铅笔')" onmouseout="mouseMove(event, 0)" target="_blank">
-                        <img id="pencil" class="toolsImg" onclick="onClickPen(this)" src="../images/pencil_select.png" width="25" height="25">
-                    </li>
-                    <li class="toolsSelectLi" id="penLi" onmouseover="mouseMove(event, '钢笔')" onmouseout="mouseMove(event, 0)" target="_blank">
-                        <img id="pen" class="toolsImg" onclick="onClickPen(this)" src="../images/pen.png" width="25" height="25">
+                    <li class="toolsSelectLi" id=moveLi" onmouseover="mouseMove(event, '移动')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="move" class="toolsImg"  onclick="onClickPen(this)" src="../images/move.png" width="25" height="25">
                     </li>
                     <li class="toolsSelectLi" id="eraserLi" onmouseover="mouseMove(event, '橡皮擦')" onmouseout="mouseMove(event, 0)" target="_blank">
                         <img id="eraser" class="toolsImg"  onclick="onClickPen(this)" src="../images/eraser.png" width="25" height="25">
@@ -41,9 +38,15 @@
         <div class="shapeSelectBox" id="shapeSelectBox">
             <div class="toolsSelectBorder" id="shapeSelectBorder">
                 <div class="toolsSelectTitle" id="shapeSelectTitle">
-                    <span class="toolsSelectTitleText">形状</span>
+                    <span class="toolsSelectTitleText">画笔</span>
                 </div>
                 <ul class="toolsSelectUl" id="shapeSelectUl">
+                    <li class="toolsSelectLi" id="pencilLi" onmouseover="mouseMove(event, '铅笔')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="pencil" class="toolsImg" onclick="onClickPen(this)" src="../images/pencil_select.png" width="25" height="25">
+                    </li>
+                    <li class="toolsSelectLi" id="penLi" onmouseover="mouseMove(event, '钢笔')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="pen" class="toolsImg" onclick="onClickPen(this)" src="../images/pen.png" width="25" height="25">
+                    </li>
                     <li class="toolsSelectLi" id="straightLineLi" onmouseover="mouseMove(event, '直线工具')" onmouseout="mouseMove(event, 0)">
                         <img id="straightLine" class="toolsImg" onclick="onClickPen(this)" src="../images/straightLine.png" width="25" height="25">
                     </li>

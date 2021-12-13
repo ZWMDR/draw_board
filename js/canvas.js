@@ -165,11 +165,11 @@ function onClickPen(e){  // "../images/eraser_select.png"
     lastToolId = currentToolId;
     switch (currentToolId) {
         case "pencil":{
-            selectLineTypeBox(false, 90, 30);
+            selectLineTypeBox(false, 90, 150);
             break;
         }
         case "pen":{
-            selectLineTypeBox(false, 90, 70);
+            selectLineTypeBox(false, 90, 185);
             break;
         }
         case "eraser":{
@@ -177,27 +177,27 @@ function onClickPen(e){  // "../images/eraser_select.png"
             break;
         }
         case "circle":{
-            selectLineTypeBox(false, 90, 225);
+            selectLineTypeBox(false, 90, 245);
             break;
         }
         case "straightLine":{
-            selectLineTypeBox(false, 90, 190);
+            selectLineTypeBox(false, 90, 210);
             break;
         }
         case "triangle":{
-            selectLineTypeBox(false, 90, 255);
-            break;
-        }
-        case "rectangle":{
             selectLineTypeBox(false, 90, 290);
             break;
         }
+        case "rectangle":{
+            selectLineTypeBox(false, 90, 325);
+            break;
+        }
         case "star":{
-            selectLineTypeBox(false, 90, 330);
+            selectLineTypeBox(false, 90, 360);
             break;
         }
         case "rhomboid":{
-            selectLineTypeBox(false, 90, 365);
+            selectLineTypeBox(false, 90, 395);
             points = [];
             break;
         }
@@ -955,8 +955,8 @@ function canvas2PageCoordinate(currentPoint) {
 }
 function axis2PageCoordinate(axisPoint) {
     return{
-        x: canvasCenter.x + axisPoint.x * scaleRate.x * pixelPerUnitLength,
-        y: canvasCenter.y - axisPoint.y * scaleRate.y * pixelPerUnitLength
+        x: canvasCenter.x + axisPoint.x / scaleRate.x * pixelPerUnitLength,
+        y: canvasCenter.y - axisPoint.y / scaleRate.y * pixelPerUnitLength
     };
 
 }

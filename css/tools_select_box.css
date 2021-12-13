@@ -9,7 +9,7 @@
     z-index: -2;
 }
 .penSelectBox{
-    height: 140px;
+    height: 100px;
     width: 55px;
     position: absolute;
     top: 0;
@@ -17,10 +17,10 @@
     padding: 5px;
 }
 .shapeSelectBox{
-    height: 230px;
+    height: 300px;
     width: 55px;
     position: absolute;
-    top: 160px;
+    top: 120px;
     left: 0;
     padding: 5px;
 }
@@ -28,7 +28,7 @@
     height: 170px;
     width: 55px;
     position: absolute;
-    top: 410px;
+    top: 440px;
     left: 0;
     padding: 5px;
 }
@@ -36,7 +36,7 @@
     height: 200px;
     width: 55px;
     position: absolute;
-    top: 600px;
+    top: 630px;
     left: 0;
     padding: 5px;
 }
@@ -44,7 +44,7 @@
     height: 50px;
     width: 55px;
     position: absolute;
-    top: 825px;
+    top: 855px;
     left: 0;
     padding-left: 5px;
     text-align: center;
