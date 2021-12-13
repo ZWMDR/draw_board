@@ -26,7 +26,7 @@ function execMathExpress(mathExpressStr) {
 // 检查公式格式是否正确
 function checkFormulaCharacter(mathExpressSplit) {
     for(let i = 0; i < mathExpressSplit.length; i++){
-        if(mathExpressSplit[i].type === "string"){
+        if(mathExpressSplit[i].type === "string"){ // 输入公式中含有不可解析的字符
             return false;
         }
         // else if(mathExpressSplit[i].type === "function" && i < mathExpressSplit.length -1) {

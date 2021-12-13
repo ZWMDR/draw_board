@@ -484,7 +484,6 @@ function triangleDraw(e) {
     lastPoint = getPoint(e);
     canvas.height = canvas.height;
     reDrawCanvas();
-    console.log("redraw finish");
     drawTriangle(beginPoint, lastPoint);
 }
 function triangleEnd(e) {
@@ -797,6 +796,11 @@ function drawTriangle(beginPoint, endPoint) {
         c.x = e.x + l/2 * Math.sin(alpha);
         c.y = e.y + l/2 * Math.cos(alpha);
     }
+
+    fillCircle(a, currentLineWidth.width/2, currentColor.value);
+    fillCircle(b, currentLineWidth.width/2, currentColor.value);
+    fillCircle(c, currentLineWidth.width/2, currentColor.value);
+
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -804,6 +808,7 @@ function drawTriangle(beginPoint, endPoint) {
     ctx.lineTo(c.x, c.y);
     ctx.moveTo(c.x, c.y);
     ctx.lineTo(a.x, a.y);
+
     ctx.stroke();
     ctx.closePath();
 }
@@ -857,6 +862,7 @@ function reDrawRhomboid(points, isDrawing, scale){
         if(length > 1) {
             for (let i = 0; i < length - 1; i++) {
                 drawLine(canvasPointConvert(points[i], scale), canvasPointConvert(points[i+1], scale));
+                fillCircle(points[i], currentLineWidth.width/2, currentColor.value);
             }
             drawLine(canvasPointConvert(points[length-1], scale), canvasPointConvert(points[0], scale));
         }
@@ -868,14 +874,14 @@ function reDrawCanvas(){
         let oneOp = canvasAllOps[i];
         switch (oneOp.type){
             case "Curve": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x * oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawCurve(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.controlPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate), true);
                 break;
             }
             case "Line": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x * oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawLine(canvasPointConvert(oneOp.beginPoint, oneOp.scaleRate), canvasPointConvert(oneOp.endPoint, oneOp.scaleRate));
@@ -1216,7 +1222,6 @@ $(document).ready(function(){
         selectEraserBox(true);
     });
 
-
     $("#formulaConfirmBtn").click(function (){
         let formula = $("#formulaInput").val();
         let startX = $("#startXInput").val();
@@ -1226,11 +1231,11 @@ $(document).ready(function(){
             alert("请勿输入包含中文字符的公式！");
             return;
         }
-        if(!escape(formula).indexOf("{") && !escape(formula).indexOf("}")){
+        if(formula.indexOf("{") >= 0 || formula.indexOf("}") >= 0){
             alert("请使用圆括号代替花括号！");
             return;
         }
-        if(!escape(formula).indexOf("[") && !escape(formula).indexOf("]")){
+        if(formula.indexOf("[") >= 0 || formula.indexOf("]") >= 0){
             alert("请使用圆括号代替方括号！");
             return;
         }
@@ -1238,7 +1243,7 @@ $(document).ready(function(){
             startX = Number(startX);
             endX = Number(endX);
         }catch (e){
-            alert("x轴范围请勿输入字符！");
+            alert("x轴范围处请勿输入其它字符！");
         }
         parseNormalFormula(formula, startX, endX, 0.02);
     })
@@ -1304,7 +1309,7 @@ function updateCanvasCenter(offSet) {
 }
 function canvasPointConvert(point, scale) {
     return {
-        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x * scale.x,
-        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y * scale.y
+        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x / scale.x,
+        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y / scale.y
     };
 }
