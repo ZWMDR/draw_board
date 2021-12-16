@@ -891,14 +891,14 @@ function reDrawRhomboid(points, isDrawing){
                 drawLine(points[i], points[i+1]);
             }
             for (let i = 0; i < length; i++) {
-                fillCircle(points[i], currentLineWidth.width / 2 + 2, currentColor.value);
+                fillCircle(canvasPointConvert(points[i]), currentLineWidth.width / scaleRate.x / 2 + 2, currentColor.value);
             }
         }
     }else{ // isReDraw
         if(length > 1) {
             for (let i = 0; i < length - 1; i++) {
                 drawLine(canvasPointConvert(points[i]), canvasPointConvert(points[i+1]));
-                fillCircle(points[i], currentLineWidth.width/2, currentColor.value);
+                fillCircle(canvasPointConvert(points[i]), currentLineWidth.width / scaleRate.x / 2, currentColor.value);
             }
             drawLine(canvasPointConvert(points[length-1]), canvasPointConvert(points[0]));
         }
