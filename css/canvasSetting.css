@@ -10,3 +10,87 @@
     border-radius: 5px;
     margin: 5px;
 }
+
+.scalingBox{
+    height: 30px;
+    width: 300px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    padding: 5px;
+    /*text-align: center;*/
+}
+
+.gridBox{
+    height: 50px;
+    width: 300px;
+    position: relative;
+    float: left;
+    top: 5px;
+    left: 0;
+    margin: 0;
+}
+.mouseCoordBox{
+    height: 50px;
+    width: 300px;
+    position: relative;
+    float: left;
+    top: 5px;
+    left: 0;
+    margin: 0;
+}
+.gridTitle{
+    height: 40px;
+    width: 120px;
+    position: absolute;
+    float: left;
+    top: 13px;
+    left: 0;
+    font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+}
+.mouseCoordTitle{
+    height: 40px;
+    width: 120px;
+    position: absolute;
+    float: left;
+    top: 13px;
+    left: 0;
+    font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+}
+
+.scalingUl{
+    width: 140px;
+    height: 30px;
+    list-style-type: none;
+    /*position: relative;*/
+    /*float: left;*/
+    margin-top: 5px;
+}
+.scalingTitle{
+    float: left;
+    height: 30px;
+    width: 80px;
+    align-content: center;
+    text-align: center;
+    margin-top: 5px;
+    font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #4d0099;
+}
+.scalingLi{
+    float: left;
+    height: 30px;
+    align-content: center;
+    text-align: center;
+    /*margin-top: 5px;*/
+    padding-left: 10px;
+}
+.rateText{
+    font: italic 14px Times New Roman;
+    font-size: 16px;
+    color: #4d0099;
+    user-select: none;
+    margin-bottom: 4px;
+    /*font-weight: bold;*/
+}

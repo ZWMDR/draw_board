@@ -23,6 +23,8 @@ let lastCanvasCenter = {x: 0, y: 0};
 let currentLineStyle = {id: "solid", dashes: []};
 let lastLineStyle = {id: "solid", dashes: []};
 let lineTypeBox = false;
+let drawGrid = false;
+let drawMouseCoord = false;
 
 
 // 画坐标轴
@@ -62,8 +64,8 @@ function drawCoordinateAxis() {
     backCtx.strokeText("x", canvasWidth-spance-10, canvasHeight/2-10);
     backCtx.strokeText("y", canvasWidth/2+10, spance+10);
 }
-// 画坐标刻度
-function drawCoordinateScale() {
+// 画坐标网格
+function drawCoordinateGrid() {
     backCtx.strokeStyle="#aaa";
     backCtx.lineWidth = 1;
     backCtx.setLineDash([5, 10]);
@@ -1079,7 +1081,7 @@ window.onload = function (){
                 rhomboidDraw(e);
                 break;
         }
-        mouseCoordinateRuler(getPoint(e));
+        if(drawMouseCoord) mouseCoordinateRuler(getPoint(e));
     }, false);
     canvas.addEventListener("mouseup", function (e){ // 鼠标抬起
         switch (currentToolId) {
@@ -1148,8 +1150,10 @@ window.onload = function (){
                 rhomboidCancel(false, e);
                 break;
         }
-        $("#coordinateHintBox").hide();
-        coordCanvas.height = coordCanvas.height;
+        if(drawMouseCoord) {
+            $("#coordinateHintBox").hide();
+            coordCanvas.height = coordCanvas.height;
+        }
     }, false);
     // 全屏清除
     document.getElementById("clearBtn").addEventListener("click", function (){
@@ -1200,7 +1204,7 @@ window.onload = function (){
     setRateText(scaleRate);
 
     drawCoordinateAxis();
-    drawCoordinateScale();
+    if(drawGrid) drawCoordinateGrid();
 }
 
 function selectEraserBox(isHide) {
@@ -1314,6 +1318,25 @@ $(document).ready(function(){
         }
         parseNormalFormula(formula, startX, endX, 0.02 / scaleRate.x);
     })
+
+    $("#btn_switch_grid").on('click', function(){
+        if ($("#btn_switch_grid").is(':checked')) {
+            drawGrid = true;
+            drawCoordinateGrid();
+        } else {
+            drawGrid = false;
+            backCanvas.height = backCanvas.height;
+            drawCoordinateAxis();
+        }
+    });
+    $("#btn_switch_mouse").on('click', function(){
+        if ($("#btn_switch_mouse").is(':checked')) {
+            drawMouseCoord = true;
+        } else {
+            drawMouseCoord = false;
+            coordCanvas.height = coordCanvas.height;
+        }
+    });
 });
 
 function parseNormalFormula(formula = "sin(x)+cos(x)", startX = -10, endX = 10, sep = 0.02){
@@ -1374,7 +1397,7 @@ function setCanvasScaleRate(isZoomIn){
     canvas.height = canvas.height;
 
     drawCoordinateAxis();
-    drawCoordinateScale();
+    if(drawGrid) drawCoordinateScale();
     reDrawCanvas();
 
     setRateText(scaleRate);
