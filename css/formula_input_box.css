@@ -19,6 +19,7 @@
 
 .formulaTitle{
     font: bold 20px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    width: 100%;
     color: #4d0099;
     text-align: center;
 }

@@ -240,7 +240,7 @@ function onClickLineWidth(e) {
     }
     setSelectImg(lastLineWidth.id, currentLineWidth.id);
     lastLineWidth = currentLineWidth;
-    ctx.lineWidth = currentLineWidth.width;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
 }
 function onClickEraserWidth(e) {
     canvas.height = canvas.height;
@@ -309,6 +309,7 @@ function pencilMouseStart(e){
     let currentPoint = getPoint(e);
     points.push(currentPoint);
     beginPoint = currentPoint;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
 }
 function pencilDraw(e){  //铅笔
     if(!drawFlag) return;
@@ -337,7 +338,7 @@ function pencilMouseEnd(e){
         const endPoint = lastTwoPoints[1];
         drawCurve(beginPoint, controlPoint, endPoint, false);
     }
-    ctx.lineWidth = currentLineWidth.width;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
     beginPoint = null;
     drawFlag = false;
     points = [];
@@ -358,7 +359,7 @@ function penDraw(e) {
         };
         let distance = getDistance(beginPoint, endPoint);
         let added = currentLineWidth.width / (distance + 0.3);
-        ctx.lineWidth = currentLineWidth.width + added;
+        ctx.lineWidth = (currentLineWidth.width + added) / scaleRate.x;
         drawCurve(beginPoint, controlPoint, endPoint, false);
         beginPoint = endPoint;
     }
@@ -377,9 +378,9 @@ function eraserDraw(e) {
     if(!drawFlag){ //鼠标移动，未按下
         canvas.height = canvas.height;
         reDrawCanvas();
-        drawEraser(beginPoint, currentEraserWidth.width/2);
+        drawEraser(beginPoint, currentEraserWidth.width/ scaleRate.x / 2);
         let currentLineWidth = ctx.lineWidth;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2 / scaleRate.x;
         drawRect(beginPoint, endPoint);
         ctx.lineWidth = currentLineWidth;
     }
@@ -397,20 +398,20 @@ function eraserDraw(e) {
                 startPoint.y = lastPoint.y + yGap / times * i;
                 // console.log(i, startPoint);
                 // fill_Rect(startPoint, endPoint, "#ffffff");
-                drawEraser(startPoint, currentEraserWidth.width/2);
+                drawEraser(startPoint, currentEraserWidth.width/ scaleRate.x / 2);
                 canvasAllOps.push({
                     type: "Eraser",
-                    lineWidth: ctx.lineWidth,
+                    lineWidth: currentEraserWidth.width,
                     beginPoint: canvasPoint2BasePoint(startPoint),
                     eraserWidth: currentEraserWidth
                 });
             }
         }else {
-            drawEraser(beginPoint, currentEraserWidth.width/2);
+            drawEraser(beginPoint, currentEraserWidth.width/ scaleRate.x / 2);
             canvasAllOps.push({
                 type: "Eraser",
                 scaleRate: scaleRate,
-                lineWidth: ctx.lineWidth,
+                lineWidth: currentEraserWidth.width,
                 beginPoint: canvasPoint2BasePoint(beginPoint),
                 eraserWidth: currentEraserWidth
             });
@@ -433,10 +434,9 @@ function eraserEnd(e) {
         ctx.lineWidth = currentLineWidth.width;
         canvasAllOps.push({
             type: "Eraser",
-            scaleRate: scaleRate,
-            lineWidth: ctx.lineWidth,
+            lineWidth: currentEraserWidth.width,
             beginPoint: canvasPoint2BasePoint(beginPoint),
-            eraserWidth: canvasPoint2BasePoint(currentEraserWidth)
+            eraserWidth: currentEraserWidth
         });
     }
     ctx.setLineDash(currentLineStyle.dashes);
@@ -447,6 +447,9 @@ function straightLineStart(e) {
     beginPoint = getPoint(e);
     lastPoint = beginPoint;
     drawFlag = true;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
+    ctx.strokeStyle = currentColor.value;
+    ctx.setLineDash(currentLineStyle.dashes);
 }
 function straightLineMove(e){
     if(!drawFlag) return;
@@ -461,8 +464,7 @@ function straightLineEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Line",
-        scaleRate: scaleRate,
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         beginPoint: canvasPoint2BasePoint(beginPoint),
@@ -475,6 +477,9 @@ function circleStart(e) {
     beginPoint = getPoint(e);
     lastPoint = beginPoint;
     drawFlag = true;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
+    ctx.strokeStyle = currentColor.value;
+    ctx.setLineDash(currentLineStyle.dashes);
 }
 function circleDraw(e) {
     if(!drawFlag) return;
@@ -489,8 +494,7 @@ function circleEnd(e){
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Circle",
-        scaleRate: scaleRate,
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         beginPoint: canvasPoint2BasePoint(beginPoint),
@@ -517,7 +521,6 @@ function triangleEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Triangle",
-        scaleRate: scaleRate,
         lineWidth: ctx.lineWidth,
         color: currentColor,
         lineStyle: currentLineStyle,
@@ -545,8 +548,7 @@ function rectEnd(e) {
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Rect",
-        scaleRate: scaleRate,
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         beginPoint: canvasPoint2BasePoint(beginPoint),
@@ -573,8 +575,7 @@ function starEnd(e){
     if(lastPoint.x === beginPoint.x && lastPoint.y === beginPoint.y) return;
     canvasAllOps.push({
         type: "Star",
-        scaleRate: scaleRate,
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         beginPoint: canvasPoint2BasePoint(beginPoint),
@@ -615,7 +616,7 @@ function rhomboidFinish(){
 
     canvasAllOps.push({
         type: "Rhomboid",
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         points: points
@@ -648,7 +649,7 @@ function drawCurve(beginPoint, controlPoint, endPoint, isReDraw){
     if(isReDraw) return;
     canvasAllOps.push({
         type: "Curve",
-        lineWidth: ctx.lineWidth,
+        lineWidth: currentLineWidth.width,
         color: currentColor,
         lineStyle: currentLineStyle,
         beginPoint: canvasPoint2BasePoint(beginPoint),
@@ -823,9 +824,18 @@ function drawTriangle(beginPoint, endPoint) {
         c.y = e.y + l/2 * Math.cos(alpha);
     }
 
-    fillCircle(a, currentLineWidth.width/2, currentColor.value);
-    fillCircle(b, currentLineWidth.width/2, currentColor.value);
-    fillCircle(c, currentLineWidth.width/2, currentColor.value);
+    ctx.beginPath();
+    ctx.arc(a.x, a.y,ctx.lineWidth/2,0,2*Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(b.x, b.y,ctx.lineWidth/2,0,2*Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(c.x, c.y,ctx.lineWidth/2,0,2*Math.PI);
+    ctx.closePath();
+    ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
@@ -907,35 +917,35 @@ function reDrawCanvas(){
                 break;
             }
             case "Line": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawLine(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Circle": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawCircle(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Rect": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawRect(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Triangle": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawTriangle(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
                 break;
             }
             case "Star": {
-                ctx.lineWidth = oneOp.lineWidth / scaleRate.x / oneOp.scaleRate.x;
+                ctx.lineWidth = oneOp.lineWidth / scaleRate.x;
                 ctx.strokeStyle = oneOp.color.value;
                 ctx.setLineDash(oneOp.lineStyle.dashes);
                 drawStar(canvasPointConvert(oneOp.beginPoint), canvasPointConvert(oneOp.endPoint));
@@ -949,7 +959,7 @@ function reDrawCanvas(){
                 break;
             }
             case "Eraser": {
-                drawEraser(oneOp.beginPoint, oneOp.eraserWidth.width/2);
+                drawEraser(canvasPointConvert(oneOp.beginPoint), oneOp.eraserWidth.width / scaleRate.x /2);
                 break;
             }
             case "function":{
@@ -961,7 +971,7 @@ function reDrawCanvas(){
             }
         }
     }
-    ctx.lineWidth = currentLineWidth.width;
+    ctx.lineWidth = currentLineWidth.width / scaleRate.x;
     ctx.strokeStyle = currentColor.value;
     ctx.setLineDash(currentLineStyle.dashes);
 }
@@ -983,7 +993,6 @@ function axis2PageCoordinate(axisPoint) {
         x: canvasCenter.x + axisPoint.x / scaleRate.x * pixelPerUnitLength,
         y: canvasCenter.y - axisPoint.y / scaleRate.y * pixelPerUnitLength
     };
-
 }
 function getDistance(pointA, pointB) {
     return Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
@@ -1303,7 +1312,7 @@ $(document).ready(function(){
         }catch (e){
             alert("x轴绘图范围处请勿输入其它字符！");
         }
-        parseNormalFormula(formula, startX, endX, 0.02);
+        parseNormalFormula(formula, startX, endX, 0.02 / scaleRate.x);
     })
 });
 
@@ -1312,6 +1321,9 @@ function parseNormalFormula(formula = "sin(x)+cos(x)", startX = -10, endX = 10, 
     if(checkFormulaCharacter(formulaSplit)){
         let expressStr = evalMathExpress(formulaSplit).join("");
         try {
+            ctx.lineWidth = currentLineWidth.width;
+            ctx.strokeStyle = currentColor.value;
+            ctx.setLineDash([]);
             drawFormula(expressStr, startX, endX, sep);
             canvasAllOps.push({
                 type: "function",

@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../css/formula_input_box.css">
     <link rel="stylesheet" type="text/css" href="../css/scaling.css">
     <link rel="stylesheet" type="text/css" href="../css/canvasSetting.css">
+    <link rel="stylesheet" type="text/css" href="../css/feedback.css">
     <title>几何画板</title>
 </head>
 
@@ -159,34 +160,7 @@
             <button id="saveBtn" class="clearBtn">保存图片</button>
         </div>
 <!--缩放按钮-->
-        <div class="scalingBox" id="scalingBox">
-<!--            <button id="zoomInBtn" class="scalingBtn">放大</button>-->
-<!--            <button id="zoomOutBtn" class="scalingBtn">缩小</button>-->
-            <ul id="scalingUl" class="scalingUl">
-                <li id="zoomInTitle" class="scalingTitle">画布缩放比例：</li>
-                <li id="zoomInLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">
-                    <img id="zoomIn" src="../images/zoomIn.png" width="20" height="20">
-                </li>
-                <li id="rateLi" class="scalingLi">
-                    <span id="rateText" class="rateText">1.00</span>
-                </li>
-                <li id="zoomOutLi" class="scalingLi" onmouseover="mouseMove(event, '缩小')" onmouseout="mouseMove(event, 0)" target="_blank">
-                    <img id="zoomOut" src="../images/zoomOut.png" width="20" height="20">
-                </li>
-            </ul>
-<!--            <ul id="scalingYUl" class="scalingUl">-->
-<!--                <li id="zoomInYTitle" class="scalingTitle">y轴: </li>-->
-<!--                <li id="zoomInYLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">-->
-<!--                    <img id="zoomInY" src="../images/zoomIn.png" width="20" height="20">-->
-<!--                </li>-->
-<!--                <li id="rateYLi" class="scalingLi">-->
-<!--                    <span id="rateY" class="rateText">1.00</span>-->
-<!--                </li>-->
-<!--                <li id="zoomOutYLi" class="scalingLi" onmouseover="mouseMove(event, '缩小')" onmouseout="mouseMove(event, 0)" target="_blank">-->
-<!--                    <img id="zoomOutY" src="../images/zoomOut.png" width="20" height="20">-->
-<!--                </li>-->
-<!--            </ul>-->
-    </div>
+
 
 <!--坐标位置-->
         <div class="coordinateHintBox" id="coordinateHintBox">
@@ -235,8 +209,25 @@
         </div>
 <!--画板设置部分-->
         <div class="settingBox">
+            <div class="scalingBox" id="scalingBox">
+                <span id="zoomInTitle" class="scalingTitle">缩放比例：</span>
+                <ul id="scalingUl" class="scalingUl">
+                    <li id="zoomInLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="zoomIn" src="../images/zoomIn.png" width="20" height="20">
+                    </li>
+                    <li id="rateLi" class="scalingLi">
+                        <span id="rateText" class="rateText">1.00</span>
+                    </li>
+                    <li id="zoomOutLi" class="scalingLi" onmouseover="mouseMove(event, '缩小')" onmouseout="mouseMove(event, 0)" target="_blank">
+                        <img id="zoomOut" src="../images/zoomOut.png" width="20" height="20">
+                    </li>
+                </ul>
+            </div>
 
-
+        </div>
+<!--反馈渠道部分-->
+        <div class="feedbackBox">
+            <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=0aumvLWjvamykbe_qbywuL3-sr68" style="text-decoration:none;"><img src="http://rescdn.qqmail.com/zh_CN/htmledition/images/function/qm_open/ico_mailme_12.png"/></a>
         </div>
 
         <!--画板显示部分-->

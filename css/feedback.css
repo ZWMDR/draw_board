@@ -1,0 +1,12 @@
+.feedbackBox{
+    height: 50px;
+    width: 300px;
+    position: absolute;
+    top: 540px;
+    left: 1590px;
+    padding: 5px;
+    /*text-align: center;*/
+    /*border:2px solid #999999;*/
+    /*border-radius: 5px;*/
+    /*margin: 5px;*/
+}
