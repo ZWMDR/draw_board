@@ -35,24 +35,24 @@ function drawCoordinateAxis() {
     backCtx.setLineDash([5]);
     // 绘制Y轴
     backCtx.beginPath();
-    backCtx.moveTo(canvasWidth/2,spance);
-    backCtx.lineTo(canvasWidth/2,canvasHeight-spance);
+    backCtx.moveTo(canvasCenter.x,spance);
+    backCtx.lineTo(canvasCenter.x,canvasHeight-spance);
     backCtx.stroke();
     // 绘制X轴
     backCtx.beginPath();
-    backCtx.moveTo(spance,canvasHeight/2);
-    backCtx.lineTo(canvasWidth-spance,canvasHeight/2);
+    backCtx.moveTo(spance,canvasCenter.y);
+    backCtx.lineTo(canvasWidth-spance,canvasCenter.y);
     backCtx.stroke();
     // 绘制X轴的箭头
-    backCtx.moveTo(canvasWidth-spance,canvasHeight/2-5);
-    backCtx.lineTo(canvasWidth-spance,canvasHeight/2+5);
-    backCtx.lineTo(canvasWidth-spance+10,canvasHeight/2);
+    backCtx.moveTo(canvasWidth-spance,canvasCenter.y-5);
+    backCtx.lineTo(canvasWidth-spance,canvasCenter.y+5);
+    backCtx.lineTo(canvasWidth-spance+10,canvasCenter.y);
     backCtx.closePath();
     backCtx.fill();
     // 绘制Y轴箭头
-    backCtx.moveTo(canvasWidth/2-5,spance);
-    backCtx.lineTo(canvasWidth/2+5,spance);
-    backCtx.lineTo(canvasWidth/2,spance-10);
+    backCtx.moveTo(canvasCenter.x-5,spance);
+    backCtx.lineTo(canvasCenter.x+5,spance);
+    backCtx.lineTo(canvasCenter.x,spance-10);
     backCtx.closePath();
     backCtx.fill();
 
@@ -71,20 +71,20 @@ function drawCoordinateGrid() {
     backCtx.setLineDash([5, 10]);
     backCtx.beginPath();
     // x坐标
-    for(let i = canvasWidth/2+pixelPerUnitLength/scaleRate.x; i < canvasWidth-spance; i += pixelPerUnitLength/scaleRate.x){
+    for(let i = canvasCenter.x+pixelPerUnitLength/scaleRate.x; i < canvasWidth-spance; i += pixelPerUnitLength/scaleRate.x){
         backCtx.moveTo(i, spance);
         backCtx.lineTo(i, canvasHeight-spance);
     }
-    for(let i = canvasWidth/2-pixelPerUnitLength/scaleRate.x; i > spance; i -= pixelPerUnitLength/scaleRate.x){
+    for(let i = canvasCenter.x-pixelPerUnitLength/scaleRate.x; i > spance; i -= pixelPerUnitLength/scaleRate.x){
         backCtx.moveTo(i, spance);
         backCtx.lineTo(i, canvasHeight-spance);
     }
     // y坐标
-    for(let i = canvasHeight/2+pixelPerUnitLength/scaleRate.y; i < canvasHeight-spance; i += pixelPerUnitLength/scaleRate.y){
+    for(let i = canvasCenter.y+pixelPerUnitLength/scaleRate.y; i < canvasHeight-spance; i += pixelPerUnitLength/scaleRate.y){
         backCtx.moveTo(spance, i);
         backCtx.lineTo(canvasWidth-spance, i);
     }
-    for(let i = canvasHeight/2-pixelPerUnitLength/scaleRate.y; i > spance; i -= pixelPerUnitLength/scaleRate.y){
+    for(let i = canvasCenter.y-pixelPerUnitLength/scaleRate.y; i > spance; i -= pixelPerUnitLength/scaleRate.y){
         backCtx.moveTo(spance, i);
         backCtx.lineTo(canvasWidth-spance, i);
     }
@@ -119,8 +119,8 @@ function drawCoordinateGrid() {
 // }
 // 鼠标显示横纵坐标
 function mouseCoordinateRuler(currentPoint) {
-    let xCoord = ((currentPoint.x - canvasWidth/2) / pixelPerUnitLength * scaleRate.x).toFixed(1);
-    let yCoord = ((canvasHeight/2 - currentPoint.y) / pixelPerUnitLength * scaleRate.y).toFixed(1);
+    let xCoord = ((currentPoint.x - canvasCenter.x) / pixelPerUnitLength * scaleRate.x).toFixed(1);
+    let yCoord = ((canvasCenter.y - currentPoint.y) / pixelPerUnitLength * scaleRate.y).toFixed(1);
     mouseCoordinateAxis(xCoord, yCoord, currentPoint);
     if(drawFlag){
         $("#coordinateHintBox").hide();
@@ -140,9 +140,9 @@ function mouseCoordinateAxis(xCoord, yCoord, currentPoint) {
     coordCtx.setLineDash([5, 15]);
     coordCtx.beginPath();
     coordCtx.moveTo(currentPoint.x, currentPoint.y);
-    coordCtx.lineTo(currentPoint.x, canvasHeight/2);
+    coordCtx.lineTo(currentPoint.x, canvasCenter.y);
     coordCtx.moveTo(currentPoint.x, currentPoint.y);
-    coordCtx.lineTo(canvasWidth/2, currentPoint.y);
+    coordCtx.lineTo(canvasCenter.x, currentPoint.y);
     coordCtx.stroke();
     coordCtx.closePath();
 
@@ -151,8 +151,8 @@ function mouseCoordinateAxis(xCoord, yCoord, currentPoint) {
     coordCtx.font = "italic 14px Times New Roman";
     coordCtx.strokeStyle = "#4d0099";
     coordCtx.textAlign = "center";
-    coordCtx.strokeText(xCoord, currentPoint.x, canvasHeight/2-10);
-    coordCtx.strokeText(yCoord, canvasWidth/2+10, currentPoint.y);
+    coordCtx.strokeText(xCoord, currentPoint.x, canvasCenter.y-10);
+    coordCtx.strokeText(yCoord, canvasCenter.x+10, currentPoint.y);
 }
 function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜色
     document.getElementById(lastID).src = "../images/" + lastID + ".png";
@@ -161,6 +161,9 @@ function setSelectImg(lastID, currentID) { //设置选中、未选中图片颜�
 
 function canvasMoveStart(e){
     beginPoint = getPoint(e);
+    canvas.height = canvas.height;
+    backCanvas.height = backCanvas.height;
+    drawCoordinateAxis();
     drawFlag = true;
 }
 function canvasMove(e){
@@ -168,8 +171,11 @@ function canvasMove(e){
     lastPoint = getPoint(e);
     let offset = {x: lastPoint.x - beginPoint.x, y: lastPoint.y - beginPoint.y};
     updateCanvasCenter(offset);
-    canvas.height = canvas.height;
-    reDrawCanvas();
+    // canvas.height = canvas.height;
+    backCanvas.height = backCanvas.height;
+    drawCoordinateAxis();
+    // drawCoordinateGrid();
+    // reDrawCanvas();
 }
 function canvasMoveEnd(e){
     // lastPoint = getPoint(e);
@@ -177,6 +183,9 @@ function canvasMoveEnd(e){
     // updateCanvasCenter(offset);
     lastCanvasCenter = canvasCenter;
     canvas.height = canvas.height;
+    backCanvas.height = backCanvas.height;
+    drawCoordinateAxis();
+    if(drawGrid) drawCoordinateGrid();
     reDrawCanvas();
     drawFlag = false;
 }
