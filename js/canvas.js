@@ -1277,6 +1277,10 @@ $(document).ready(function(){
     $("#lineTypeSelectBox").hide();
     $("#coordinateHintBox").hide();
 
+    $("#questionnaireBox").click(function (){
+        window.open("https://www.wjx.cn/vj/tSyaZOL.aspx");
+    });
+
     $("#eraser").click(function(){
         selectEraserBox(false);
     });
@@ -1422,14 +1426,22 @@ function resetCanvasCenter(){
     lastCanvasCenter = canvasCenter;
 }
 function canvasPointConvert(point) {
+    // return {
+    //     x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x,
+    //     y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y
+    // };
     return {
-        x: canvasCenter.x + (point.x - canvasCenter.x) / scaleRate.x,
-        y: canvasCenter.y + (point.y - canvasCenter.y) / scaleRate.y
+        x: canvasCenter.x + point.x / scaleRate.x,
+        y: canvasCenter.y + point.y / scaleRate.y
     };
 }
 function canvasPoint2BasePoint(point) {
+    // return{
+    //     x: canvasCenter.x + (point.x - canvasCenter.x) * scaleRate.x,
+    //     y: canvasCenter.y + (point.y - canvasCenter.y) * scaleRate.y
+    // }
     return{
-        x: canvasCenter.x + (point.x - canvasCenter.x) * scaleRate.x,
-        y: canvasCenter.y + (point.y - canvasCenter.y) * scaleRate.y
+        x: (point.x - canvasCenter.x) * scaleRate.x,
+        y: (point.y - canvasCenter.y) * scaleRate.y
     }
 }

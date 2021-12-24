@@ -207,7 +207,7 @@
                 <span id="zoomInTitle" class="scalingTitle">缩放比例：</span>
                 <ul id="scalingUl" class="scalingUl">
                     <li id="zoomInLi" class="scalingLi" onmouseover="mouseMove(event, '放大')" onmouseout="mouseMove(event, 0)" target="_blank">
-                        <img id="zoomIn" src="../images/zoomIn.png" width="20" height="20">
+                        <img id="zoomIn"  src="../images/zoomIn.png" width="20" height="20">
                     </li>
                     <li id="rateLi" class="scalingLi">
                         <span id="rateText" class="rateText">1.00</span>
@@ -244,7 +244,11 @@
         </div>
 <!--反馈渠道部分-->
         <div class="feedbackBox">
-            <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=0aumvLWjvamykbe_qbywuL3-sr68" style="text-decoration:none;"><img src="http://rescdn.qqmail.com/zh_CN/htmledition/images/function/qm_open/ico_mailme_12.png"/></a>
+            <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=0aumvLWjvamykbe_qbywuL3-sr68" style="text-decoration:none;" onmouseover="mouseMove(event, '使用邮箱进行意见反馈')" onmouseout="mouseMove(event, 0)" target="_blank"><img src="http://rescdn.qqmail.com/zh_CN/htmledition/images/function/qm_open/ico_mailme_12.png"/></a>
+            <div class="questionnaireBox" id="questionnaireBox" onmouseover="mouseMove(event, '用户评价')" onmouseout="mouseMove(event, 0)" target="_blank">
+                <img id="questionnaireImg" class="questionnaireImg" src="../images/questionnaire.png" width="25" height="25">
+                <span id="questionnaireText" class="questionnaireText">用户评价</span>
+            </div>
         </div>
 
         <!--画板显示部分-->

@@ -59,6 +59,7 @@
     left: 0;
     font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
     color: #4d0099;
+    user-select: none;
 }
 .mouseCoordTitle{
     height: 40px;
@@ -69,6 +70,7 @@
     left: 0;
     font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
     color: #4d0099;
+    user-select: none;
 }
 
 .scalingUl{
@@ -88,6 +90,7 @@
     margin-top: 5px;
     font: 16px "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
     color: #4d0099;
+    user-select: none;
 }
 .scalingLi{
     float: left;
@@ -104,4 +107,10 @@
     user-select: none;
     margin-bottom: 4px;
     /*font-weight: bold;*/
+}
+#zoomIn{
+    cursor: pointer;
+}
+#zoomOut{
+    cursor: pointer;
 }
