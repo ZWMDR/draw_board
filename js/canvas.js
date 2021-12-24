@@ -61,8 +61,8 @@ function drawCoordinateAxis() {
     backCtx.font = "italic 20px Times New Roman";
     backCtx.strokeStyle = "#4d0099";
     backCtx.textAlign = "center";
-    backCtx.strokeText("x", canvasWidth-spance-10, canvasHeight/2-10);
-    backCtx.strokeText("y", canvasWidth/2+10, spance+10);
+    backCtx.strokeText("x", canvasWidth-spance-10, canvasCenter.y-10);
+    backCtx.strokeText("y", canvasCenter.x+10, spance+10);
 }
 // 画坐标网格
 function drawCoordinateGrid() {
