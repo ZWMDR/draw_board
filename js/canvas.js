@@ -876,8 +876,8 @@ function drawStar(beginPoint, endPoint){
         ctx.lineTo(x, y)
 
     }
-    ctx.moveTo(x, y);
-    ctx.lineTo(Math.cos(18/180 * Math.PI) * R+beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R+beginPoint.y );
+    ctx.lineTo(Math.cos(18/180 * Math.PI) * R + beginPoint.x,-Math.sin(18/ 180 * Math.PI) * R + beginPoint.y);
+    ctx.lineTo(Math.cos(54/180 * Math.PI) * r + beginPoint.x,-Math.sin(54/ 180 * Math.PI) * r + beginPoint.y);
     ctx.stroke();
     ctx.closePath();
 }
