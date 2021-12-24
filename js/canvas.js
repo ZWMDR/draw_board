@@ -165,23 +165,24 @@ function canvasMoveStart(e){
     backCanvas.height = backCanvas.height;
     drawCoordinateAxis();
     drawFlag = true;
+    lastCanvasCenter.x = canvasCenter.x;
+    lastCanvasCenter.y = canvasCenter.y;
 }
 function canvasMove(e){
     if(!drawFlag) return;
     lastPoint = getPoint(e);
     let offset = {x: lastPoint.x - beginPoint.x, y: lastPoint.y - beginPoint.y};
     updateCanvasCenter(offset);
-    // canvas.height = canvas.height;
+    canvas.height = canvas.height;
     backCanvas.height = backCanvas.height;
     drawCoordinateAxis();
-    // drawCoordinateGrid();
-    // reDrawCanvas();
+    if(drawGrid) drawCoordinateGrid();
+    reDrawCanvas();
 }
 function canvasMoveEnd(e){
     // lastPoint = getPoint(e);
     // let offset = {x: lastPoint.x - beginPoint.x, y: lastPoint.y - beginPoint.y};
     // updateCanvasCenter(offset);
-    lastCanvasCenter = canvasCenter;
     canvas.height = canvas.height;
     backCanvas.height = backCanvas.height;
     drawCoordinateAxis();
@@ -1021,7 +1022,6 @@ window.onload = function (){
     canvasWidth = canvas.width;
     canvasCenter.x = canvasWidth / 2;
     canvasCenter.y = canvasHeight / 2;
-    lastCanvasCenter = canvasCenter;
     canvas.addEventListener("mousedown", function (e){ // 鼠标按下
         selectLineTypeBox(true, 0, 0);
         switch (currentToolId) {
@@ -1416,14 +1416,17 @@ function setCanvasScaleRate(isZoomIn){
     setRateText(scaleRate);
 }
 function updateCanvasCenter(offSet) {
-    canvasCenter.x = canvasWidth / 2 + offSet.x;
-    canvasCenter.y = canvasHeight / 2 + offSet.y;
+    // canvasCenter.x = canvasWidth / 2 + offSet.x;
+    // canvasCenter.y = canvasHeight / 2 + offSet.y;
+    canvasCenter.x = lastCanvasCenter.x + offSet.x;
+    canvasCenter.y = lastCanvasCenter.y + offSet.y;
     // console.log(lastCanvasCenter);
 }
 function resetCanvasCenter(){
     canvasCenter.x = canvasWidth / 2;
     canvasCenter.y = canvasHeight / 2;
-    lastCanvasCenter = canvasCenter;
+    lastCanvasCenter.x = canvasCenter.x;
+    lastCanvasCenter.y = canvasCenter.y;
 }
 function canvasPointConvert(point) {
     // return {
